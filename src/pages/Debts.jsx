@@ -11,6 +11,9 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { toast } from "sonner";
 import DebtCard from "../components/dashboard/DebtCard";
+import QuickPaymentModal from "../components/debt/QuickPaymentModal";
+import CelebrationModal from "../components/debt/CelebrationModal";
+import { format } from "date-fns";
 
 export default function Debts() {
   const [showForm, setShowForm] = useState(false);
@@ -22,6 +25,11 @@ export default function Debts() {
     minimum_payment: "",
     due_date: "",
   });
+
+  const [quickPaymentDebt, setQuickPaymentDebt] = useState(null);
+  const [quickPaymentType, setQuickPaymentType] = useState("pay");
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [paidOffDebtInfo, setPaidOffDebtInfo] = useState(null);
 
   const queryClient = useQueryClient();
 
@@ -41,6 +49,54 @@ export default function Debts() {
     },
     onError: () => {
       toast.error("Failed to add debt");
+    }
+  });
+
+  const quickPaymentMutation = useMutation({
+    mutationFn: async ({ debt, amount, type }) => {
+      const newBalance = type === "pay" 
+        ? Math.max(0, debt.current_balance - amount)
+        : debt.current_balance + amount;
+      
+      const isPaidOff = newBalance === 0;
+      
+      await base44.entities.Payment.create({
+        debt_id: debt.id,
+        amount: amount,
+        payment_date: format(new Date(), "yyyy-MM-dd"),
+        notes: type === "pay" ? "Quick payment" : "Balance adjustment",
+      });
+      
+      await base44.entities.Debt.update(debt.id, {
+        current_balance: newBalance,
+        status: isPaidOff ? "paid_off" : "active",
+      });
+
+      if (isPaidOff) {
+        setPaidOffDebtInfo({
+          name: debt.name,
+          amount: debt.total_amount,
+        });
+        setShowCelebration(true);
+
+        const user = await base44.auth.me();
+        await base44.entities.Notification.create({
+          title: "🎉 Debt Paid Off!",
+          message: `Congratulations! You've completely paid off your ${debt.name}. That's $${debt.total_amount.toLocaleString()} of debt eliminated!`,
+          type: "debt_paid_off",
+          debt_id: debt.id,
+          user_email: user.email,
+          is_read: false,
+        });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['debts'] });
+      toast.success("Balance updated successfully!");
+      setQuickPaymentDebt(null);
+    },
+    onError: () => {
+      toast.error("Failed to update balance");
     }
   });
 
@@ -78,6 +134,14 @@ export default function Debts() {
       minimum_payment: formData.minimum_payment ? parseFloat(formData.minimum_payment) : null,
       due_date: formData.due_date ? parseInt(formData.due_date) : null,
       status: "active",
+    });
+  };
+
+  const handleQuickPayment = (debt, amount) => {
+    quickPaymentMutation.mutate({ 
+      debt, 
+      amount, 
+      type: quickPaymentType 
     });
   };
 
@@ -242,10 +306,33 @@ export default function Debts() {
               debt={debt}
               onClick={() => window.location.href = createPageUrl("DebtDetail") + `?id=${debt.id}`}
               onEdit={(debt) => window.location.href = createPageUrl("DebtDetail") + `?id=${debt.id}`}
+              onQuickPay={(debt) => {
+                setQuickPaymentDebt(debt);
+                setQuickPaymentType("pay");
+              }}
+              onQuickAdd={(debt) => {
+                setQuickPaymentDebt(debt);
+                setQuickPaymentType("add");
+              }}
             />
           ))}
         </div>
       </div>
+
+      <QuickPaymentModal
+        open={!!quickPaymentDebt}
+        onOpenChange={(open) => !open && setQuickPaymentDebt(null)}
+        debt={quickPaymentDebt}
+        type={quickPaymentType}
+        onSubmit={(amount) => handleQuickPayment(quickPaymentDebt, amount)}
+      />
+
+      <CelebrationModal
+        open={showCelebration}
+        onOpenChange={setShowCelebration}
+        debtName={paidOffDebtInfo?.name || ""}
+        totalAmount={paidOffDebtInfo?.amount || 0}
+      />
     </div>
   );
 }

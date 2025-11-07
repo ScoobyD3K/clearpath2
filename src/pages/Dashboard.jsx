@@ -11,6 +11,9 @@ import EditableStatCard from "../components/dashboard/EditableStatCard";
 import DebtCard from "../components/dashboard/DebtCard";
 import StrategySelector from "../components/strategy/StrategySelector";
 import NavigationEditor from "../components/dashboard/NavigationEditor";
+import CelebrationModal from "../components/debt/CelebrationModal";
+import QuickPaymentModal from "../components/debt/QuickPaymentModal";
+import { format } from "date-fns";
 import { toast } from "sonner";
 
 export default function Dashboard() {
@@ -18,6 +21,10 @@ export default function Dashboard() {
   const [showStrategySelector, setShowStrategySelector] = useState(false);
   const [editingDebt, setEditingDebt] = useState(null);
   const [showNavEditor, setShowNavEditor] = useState(false);
+  const [quickPaymentDebt, setQuickPaymentDebt] = useState(null);
+  const [quickPaymentType, setQuickPaymentType] = useState("pay");
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [paidOffDebtInfo, setPaidOffDebtInfo] = useState(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -66,6 +73,89 @@ export default function Dashboard() {
       toast.error("Failed to update income");
     }
   });
+
+  const quickPaymentMutation = useMutation({
+    mutationFn: async ({ debt, amount, type }) => {
+      const newBalance = type === "pay" 
+        ? Math.max(0, debt.current_balance - amount)
+        : debt.current_balance + amount;
+      
+      const isPaidOff = newBalance === 0;
+      
+      // Create payment record
+      await base44.entities.Payment.create({
+        debt_id: debt.id,
+        amount: amount,
+        payment_date: format(new Date(), "yyyy-MM-dd"),
+        notes: type === "pay" ? "Quick payment" : "Balance adjustment",
+      });
+      
+      // Update debt
+      await base44.entities.Debt.update(debt.id, {
+        current_balance: newBalance,
+        status: isPaidOff ? "paid_off" : "active",
+      });
+
+      // Handle notifications
+      if (isPaidOff) {
+        setPaidOffDebtInfo({
+          name: debt.name,
+          amount: debt.total_amount,
+        });
+        setShowCelebration(true);
+
+        const user = await base44.auth.me();
+        await base44.entities.Notification.create({
+          title: "🎉 Debt Paid Off!",
+          message: `Congratulations! You've completely paid off your ${debt.name}. That's $${debt.total_amount.toLocaleString()} of debt eliminated!`,
+          type: "debt_paid_off",
+          debt_id: debt.id,
+          user_email: user.email,
+          is_read: false,
+        });
+
+        if (user.email_notifications !== false) {
+          await base44.integrations.Core.SendEmail({
+            to: user.email,
+            subject: `🎉 Congratulations! ${debt.name} Paid Off!`,
+            body: `
+              <h2>Amazing Achievement! 🎉</h2>
+              <p>You've completely paid off your <strong>${debt.name}</strong>!</p>
+              <p>Total amount paid: <strong>$${debt.total_amount.toLocaleString()}</strong></p>
+              <p>Keep up the great work on your journey to financial freedom!</p>
+            `,
+          });
+        }
+      } else if (type === "pay" && debt.minimum_payment && amount >= debt.minimum_payment * 2) {
+        const user = await base44.auth.me();
+        await base44.entities.Notification.create({
+          title: "💪 Great Payment!",
+          message: `Awesome! You paid $${amount.toLocaleString()} on ${debt.name}, which is ${Math.round((amount / debt.minimum_payment) * 100)}% more than the minimum. You're accelerating your debt freedom!`,
+          type: "great_payment",
+          debt_id: debt.id,
+          user_email: user.email,
+          is_read: false,
+        });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['debts'] });
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      toast.success("Balance updated successfully!");
+      setQuickPaymentDebt(null);
+    },
+    onError: () => {
+      toast.error("Failed to update balance");
+    }
+  });
+
+  const handleQuickPayment = (debt, amount) => {
+    quickPaymentMutation.mutate({ 
+      debt, 
+      amount, 
+      type: quickPaymentType 
+    });
+  };
 
   const sortedDebts = [...debts].sort((a, b) => {
     if (user?.payoff_strategy === "snowball") {
@@ -131,7 +221,7 @@ export default function Dashboard() {
             iconColor="text-rose-600"
           />
           <EditableStatCard
-            title="Savings"
+            title="Monthly Income"
             value={user?.monthly_income ? `$${user.monthly_income.toLocaleString()}` : "$0"}
             icon={DollarSign}
             bgGradient="bg-gradient-to-br from-green-500 to-emerald-600"
@@ -205,6 +295,14 @@ export default function Dashboard() {
                     debt={debt}
                     onClick={() => window.location.href = createPageUrl("DebtDetail") + `?id=${debt.id}`}
                     onEdit={(debt) => window.location.href = createPageUrl("DebtDetail") + `?id=${debt.id}`}
+                    onQuickPay={(debt) => {
+                      setQuickPaymentDebt(debt);
+                      setQuickPaymentType("pay");
+                    }}
+                    onQuickAdd={(debt) => {
+                      setQuickPaymentDebt(debt);
+                      setQuickPaymentType("add");
+                    }}
                   />
                 </div>
               ))}
@@ -217,6 +315,21 @@ export default function Dashboard() {
         open={showNavEditor}
         onOpenChange={setShowNavEditor}
         user={user}
+      />
+
+      <QuickPaymentModal
+        open={!!quickPaymentDebt}
+        onOpenChange={(open) => !open && setQuickPaymentDebt(null)}
+        debt={quickPaymentDebt}
+        type={quickPaymentType}
+        onSubmit={(amount) => handleQuickPayment(quickPaymentDebt, amount)}
+      />
+
+      <CelebrationModal
+        open={showCelebration}
+        onOpenChange={setShowCelebration}
+        debtName={paidOffDebtInfo?.name || ""}
+        totalAmount={paidOffDebtInfo?.amount || 0}
       />
     </div>
   );
