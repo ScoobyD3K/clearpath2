@@ -5,6 +5,7 @@ import DebtDetail from './pages/DebtDetail';
 import Strategy from './pages/Strategy';
 import Notifications from './pages/Notifications';
 import Settings from './pages/Settings';
+import Statistics from './pages/Statistics';
 import Layout from './Layout.jsx';
 
 
@@ -16,6 +17,7 @@ export const PAGES = {
     "Strategy": Strategy,
     "Notifications": Notifications,
     "Settings": Settings,
+    "Statistics": Statistics,
 }
 
 export const pagesConfig = {

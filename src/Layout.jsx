@@ -1,7 +1,8 @@
+
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { LayoutDashboard, CreditCard, TrendingUp, DollarSign, Bell } from "lucide-react";
+import { LayoutDashboard, CreditCard, TrendingUp, DollarSign, Bell, BarChart3 } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -32,6 +33,11 @@ const navigationItems = [
     title: "Payoff Strategy",
     url: createPageUrl("Strategy"),
     icon: TrendingUp,
+  },
+  {
+    title: "Statistics",
+    url: createPageUrl("Statistics"),
+    icon: BarChart3,
   },
   {
     title: "Notifications",
