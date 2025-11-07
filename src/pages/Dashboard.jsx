@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -7,9 +6,11 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Plus, TrendingUp, DollarSign, CreditCard, Target, Zap, Settings } from "lucide-react";
 import StatCard from "../components/dashboard/StatCard";
+import EditableStatCard from "../components/dashboard/EditableStatCard";
 import DebtCard from "../components/dashboard/DebtCard";
 import StrategySelector from "../components/strategy/StrategySelector";
 import NavigationEditor from "../components/dashboard/NavigationEditor";
+import { toast } from "sonner";
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -50,6 +51,19 @@ export default function Dashboard() {
       queryClient.invalidateQueries({ queryKey: ['debts'] });
       setEditingDebt(null);
     },
+  });
+
+  const updateMonthlyIncomeMutation = useMutation({
+    mutationFn: (newIncome) => base44.auth.updateMe({ monthly_income: newIncome }),
+    onSuccess: async () => {
+      const updatedUser = await base44.auth.me();
+      setUser(updatedUser);
+      toast.success("Monthly income updated!");
+      queryClient.invalidateQueries({ queryKey: ['user'] });
+    },
+    onError: () => {
+      toast.error("Failed to update income");
+    }
   });
 
   const sortedDebts = [...debts].sort((a, b) => {
@@ -114,12 +128,14 @@ export default function Dashboard() {
             bgGradient="bg-gradient-to-br from-rose-500 to-pink-600"
             iconColor="text-rose-600"
           />
-          <StatCard
+          <EditableStatCard
             title="Monthly Income"
-            value={user?.monthly_income ? `$${user.monthly_income.toLocaleString()}` : "—"}
+            value={user?.monthly_income ? `$${user.monthly_income.toLocaleString()}` : "$0"}
             icon={DollarSign}
             bgGradient="bg-gradient-to-br from-blue-500 to-indigo-600"
             iconColor="text-blue-600"
+            editable={true}
+            onSave={(newValue) => updateMonthlyIncomeMutation.mutate(newValue)}
           />
           <StatCard
             title="Min Payments"
