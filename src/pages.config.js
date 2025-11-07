@@ -6,6 +6,7 @@ import Strategy from './pages/Strategy';
 import Notifications from './pages/Notifications';
 import Settings from './pages/Settings';
 import Statistics from './pages/Statistics';
+import PaymentHistory from './pages/PaymentHistory';
 import Layout from './Layout.jsx';
 
 
@@ -18,6 +19,7 @@ export const PAGES = {
     "Notifications": Notifications,
     "Settings": Settings,
     "Statistics": Statistics,
+    "PaymentHistory": PaymentHistory,
 }
 
 export const pagesConfig = {

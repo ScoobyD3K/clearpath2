@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -35,6 +36,12 @@ const defaultNavigationItems = [
     title: "Payoff Strategy",
     page: "Strategy",
     icon: "TrendingUp",
+    visible: true,
+  },
+  {
+    title: "Payment History",
+    page: "PaymentHistory",
+    icon: "DollarSign",
     visible: true,
   },
   {
