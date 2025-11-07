@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Plus, Trash2, DollarSign, Calendar } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, DollarSign, Calendar, Edit, X, Save } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { format, addMonths } from "date-fns";
@@ -17,6 +17,8 @@ export default function DebtDetail() {
   const debtId = urlParams.get('id');
   
   const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState(null);
   const [paymentData, setPaymentData] = useState({
     amount: "",
     payment_date: format(new Date(), "yyyy-MM-dd"),
@@ -39,6 +41,32 @@ export default function DebtDetail() {
     queryFn: () => base44.entities.Payment.filter({ debt_id: debtId }, '-payment_date'),
     initialData: [],
     enabled: !!debtId,
+  });
+
+  useEffect(() => {
+    if (debt && !editData) {
+      setEditData({
+        name: debt.name,
+        total_amount: debt.total_amount,
+        current_balance: debt.current_balance,
+        interest_rate: debt.interest_rate,
+        minimum_payment: debt.minimum_payment || "",
+        due_date: debt.due_date || "",
+      });
+    }
+  }, [debt]);
+
+  const updateDebtMutation = useMutation({
+    mutationFn: (data) => base44.entities.Debt.update(debtId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['debt', debtId] });
+      queryClient.invalidateQueries({ queryKey: ['debts'] });
+      toast.success("Debt updated successfully!");
+      setIsEditing(false);
+    },
+    onError: () => {
+      toast.error("Failed to update debt");
+    }
   });
 
   const createPaymentMutation = useMutation({
@@ -99,6 +127,30 @@ export default function DebtDetail() {
     });
   };
 
+  const handleDebtUpdate = (e) => {
+    e.preventDefault();
+    updateDebtMutation.mutate({
+      name: editData.name,
+      total_amount: parseFloat(editData.total_amount),
+      current_balance: parseFloat(editData.current_balance),
+      interest_rate: parseFloat(editData.interest_rate),
+      minimum_payment: editData.minimum_payment ? parseFloat(editData.minimum_payment) : null,
+      due_date: editData.due_date ? parseInt(editData.due_date) : null,
+    });
+  };
+
+  const calculateMinimumPayment = () => {
+    const balance = parseFloat(editData.current_balance);
+    const rate = parseFloat(editData.interest_rate);
+    
+    if (balance && rate) {
+      const monthlyRate = rate / 100 / 12;
+      const interest = balance * monthlyRate;
+      const minPayment = Math.max(interest + (balance * 0.01), 25);
+      setEditData(prev => ({ ...prev, minimum_payment: minPayment.toFixed(2) }));
+    }
+  };
+
   const calculatePayoffDate = () => {
     if (!debt?.minimum_payment || debt.minimum_payment <= 0) return null;
     
@@ -153,63 +205,228 @@ export default function DebtDetail() {
             <h1 className="text-3xl md:text-4xl font-bold text-slate-900">{debt.name}</h1>
             <p className="text-slate-600 mt-1">Debt details and payment history</p>
           </div>
+          {!isEditing && (
+            <Button
+              variant="outline"
+              onClick={() => setIsEditing(true)}
+              className="gap-2"
+            >
+              <Edit className="w-4 h-4" />
+              Edit Debt
+            </Button>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-          <Card className="border-slate-200 shadow-lg">
+        {isEditing ? (
+          <Card className="mb-6 border-slate-200 shadow-lg">
+            <CardHeader className="border-b border-slate-100">
+              <CardTitle className="flex items-center justify-between">
+                <span>Edit Debt Information</span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    setIsEditing(false);
+                    setEditData({
+                      name: debt.name,
+                      total_amount: debt.total_amount,
+                      current_balance: debt.current_balance,
+                      interest_rate: debt.interest_rate,
+                      minimum_payment: debt.minimum_payment || "",
+                      due_date: debt.due_date || "",
+                    });
+                  }}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </CardTitle>
+            </CardHeader>
             <CardContent className="p-6">
-              <div className="text-sm text-slate-600 mb-1">Current Balance</div>
-              <div className="text-3xl font-bold text-slate-900">
-                ${debt.current_balance.toLocaleString()}
-              </div>
-              <div className="text-sm text-slate-500 mt-2">
-                of ${debt.total_amount.toLocaleString()} original
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-slate-200 shadow-lg">
-            <CardContent className="p-6">
-              <div className="text-sm text-slate-600 mb-1">Total Paid</div>
-              <div className="text-3xl font-bold text-green-600">
-                ${totalPaid.toLocaleString()}
-              </div>
-              <div className="text-sm text-slate-500 mt-2">
-                {percentPaid.toFixed(1)}% complete
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-slate-200 shadow-lg">
-            <CardContent className="p-6">
-              <div className="text-sm text-slate-600 mb-1">Interest Rate</div>
-              <div className="text-3xl font-bold text-slate-900">
-                {debt.interest_rate}%
-              </div>
-              <div className="text-sm text-slate-500 mt-2">
-                Min: ${debt.minimum_payment?.toLocaleString() || '—'}/mo
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {payoffDate && (
-          <Card className="mb-6 border-blue-200 bg-blue-50 shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-sm text-blue-700 font-medium mb-1">Projected Payoff Date</div>
-                  <div className="text-2xl font-bold text-blue-900">
-                    {format(payoffDate, "MMMM d, yyyy")}
+              <form onSubmit={handleDebtUpdate} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="edit_name">Debt Name *</Label>
+                    <Input
+                      id="edit_name"
+                      value={editData?.name || ""}
+                      onChange={(e) => setEditData(prev => ({ ...prev, name: e.target.value }))}
+                      required
+                    />
                   </div>
-                  <div className="text-sm text-blue-600 mt-1">
-                    Based on minimum payments of ${debt.minimum_payment}/month
+                  
+                  <div>
+                    <Label htmlFor="edit_total">Original Amount *</Label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+                      <Input
+                        id="edit_total"
+                        type="number"
+                        step="0.01"
+                        value={editData?.total_amount || ""}
+                        onChange={(e) => setEditData(prev => ({ ...prev, total_amount: e.target.value }))}
+                        className="pl-8"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="edit_balance">Current Balance *</Label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+                      <Input
+                        id="edit_balance"
+                        type="number"
+                        step="0.01"
+                        value={editData?.current_balance || ""}
+                        onChange={(e) => setEditData(prev => ({ ...prev, current_balance: e.target.value }))}
+                        className="pl-8"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="edit_rate">Interest Rate (%) *</Label>
+                    <div className="relative">
+                      <Input
+                        id="edit_rate"
+                        type="number"
+                        step="0.01"
+                        value={editData?.interest_rate || ""}
+                        onChange={(e) => setEditData(prev => ({ ...prev, interest_rate: e.target.value }))}
+                        required
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">%</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="edit_min_payment">Minimum Payment</Label>
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+                        <Input
+                          id="edit_min_payment"
+                          type="number"
+                          step="0.01"
+                          value={editData?.minimum_payment || ""}
+                          onChange={(e) => setEditData(prev => ({ ...prev, minimum_payment: e.target.value }))}
+                          className="pl-8"
+                        />
+                      </div>
+                      <Button 
+                        type="button" 
+                        variant="outline"
+                        onClick={calculateMinimumPayment}
+                      >
+                        Calculate
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="edit_due_date">Payment Due Date (Day of Month)</Label>
+                    <Input
+                      id="edit_due_date"
+                      type="number"
+                      min="1"
+                      max="31"
+                      value={editData?.due_date || ""}
+                      onChange={(e) => setEditData(prev => ({ ...prev, due_date: e.target.value }))}
+                    />
                   </div>
                 </div>
-                <Calendar className="w-12 h-12 text-blue-400" />
-              </div>
+
+                <div className="flex justify-end gap-3 pt-4">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => {
+                      setIsEditing(false);
+                      setEditData({
+                        name: debt.name,
+                        total_amount: debt.total_amount,
+                        current_balance: debt.current_balance,
+                        interest_rate: debt.interest_rate,
+                        minimum_payment: debt.minimum_payment || "",
+                        due_date: debt.due_date || "",
+                      });
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    type="submit"
+                    className="bg-gradient-to-r from-blue-600 to-indigo-600 gap-2"
+                    disabled={updateDebtMutation.isPending}
+                  >
+                    <Save className="w-4 h-4" />
+                    {updateDebtMutation.isPending ? "Saving..." : "Save Changes"}
+                  </Button>
+                </div>
+              </form>
             </CardContent>
           </Card>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+              <Card className="border-slate-200 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="text-sm text-slate-600 mb-1">Current Balance</div>
+                  <div className="text-3xl font-bold text-slate-900">
+                    ${debt.current_balance.toLocaleString()}
+                  </div>
+                  <div className="text-sm text-slate-500 mt-2">
+                    of ${debt.total_amount.toLocaleString()} original
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-slate-200 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="text-sm text-slate-600 mb-1">Total Paid</div>
+                  <div className="text-3xl font-bold text-green-600">
+                    ${totalPaid.toLocaleString()}
+                  </div>
+                  <div className="text-sm text-slate-500 mt-2">
+                    {percentPaid.toFixed(1)}% complete
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-slate-200 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="text-sm text-slate-600 mb-1">Interest Rate</div>
+                  <div className="text-3xl font-bold text-slate-900">
+                    {debt.interest_rate}%
+                  </div>
+                  <div className="text-sm text-slate-500 mt-2">
+                    Min: ${debt.minimum_payment?.toLocaleString() || '—'}/mo
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {payoffDate && (
+              <Card className="mb-6 border-blue-200 bg-blue-50 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-sm text-blue-700 font-medium mb-1">Projected Payoff Date</div>
+                      <div className="text-2xl font-bold text-blue-900">
+                        {format(payoffDate, "MMMM d, yyyy")}
+                      </div>
+                      <div className="text-sm text-blue-600 mt-1">
+                        Based on minimum payments of ${debt.minimum_payment}/month
+                      </div>
+                    </div>
+                    <Calendar className="w-12 h-12 text-blue-400" />
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
