@@ -1,20 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Plus, TrendingUp, DollarSign, CreditCard, Target } from "lucide-react";
+import { Plus, TrendingUp, DollarSign, CreditCard, Target, Zap } from "lucide-react";
 import StatCard from "../components/dashboard/StatCard";
 import DebtCard from "../components/dashboard/DebtCard";
+import StrategySelector from "../components/strategy/StrategySelector";
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
+  const [showStrategySelector, setShowStrategySelector] = useState(false);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const fetchUser = async () => {
       const userData = await base44.auth.me();
       setUser(userData);
+      if (!userData.payoff_strategy) {
+        setShowStrategySelector(true);
+      }
     };
     fetchUser();
   }, []);
@@ -25,11 +31,25 @@ export default function Dashboard() {
     initialData: [],
   });
 
+  const updateStrategyMutation = useMutation({
+    mutationFn: (strategy) => base44.auth.updateMe({ payoff_strategy: strategy }),
+    onSuccess: async () => {
+      const updatedUser = await base44.auth.me();
+      setUser(updatedUser);
+      setShowStrategySelector(false);
+    },
+  });
+
+  const sortedDebts = [...debts].sort((a, b) => {
+    if (user?.payoff_strategy === "snowball") {
+      return a.current_balance - b.current_balance;
+    } else {
+      return b.interest_rate - a.interest_rate;
+    }
+  });
+
   const totalDebt = debts.reduce((sum, debt) => sum + debt.current_balance, 0);
   const totalMinPayments = debts.reduce((sum, debt) => sum + (debt.minimum_payment || 0), 0);
-  const averageInterest = debts.length > 0
-    ? debts.reduce((sum, debt) => sum + debt.interest_rate, 0) / debts.length
-    : 0;
 
   return (
     <div className="p-4 md:p-8 min-h-screen">
@@ -41,13 +61,30 @@ export default function Dashboard() {
             </h1>
             <p className="text-slate-600 mt-2">Track your journey to financial freedom</p>
           </div>
-          <Link to={createPageUrl("Debts")}>
-            <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg">
-              <Plus className="w-4 h-4 mr-2" />
-              Add Debt
-            </Button>
-          </Link>
+          <div className="flex gap-3">
+            <Link to={createPageUrl("Strategy")}>
+              <Button variant="outline" className="gap-2">
+                <Zap className="w-4 h-4" />
+                Payoff Strategy
+              </Button>
+            </Link>
+            <Link to={createPageUrl("Debts")}>
+              <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg">
+                <Plus className="w-4 h-4 mr-2" />
+                Add Debt
+              </Button>
+            </Link>
+          </div>
         </div>
+
+        {showStrategySelector && debts.length > 0 && (
+          <div className="mb-8">
+            <StrategySelector 
+              value={user?.payoff_strategy || "avalanche"}
+              onChange={(strategy) => updateStrategyMutation.mutate(strategy)}
+            />
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard
@@ -82,7 +119,17 @@ export default function Dashboard() {
 
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-slate-900">Active Debts</h2>
+            <div>
+              <h2 className="text-2xl font-bold text-slate-900">Active Debts</h2>
+              {user?.payoff_strategy && debts.length > 0 && (
+                <p className="text-sm text-slate-600 mt-1">
+                  Sorted by {user.payoff_strategy === "avalanche" ? "highest interest rate" : "smallest balance"} 
+                  <span className="ml-1 text-blue-600 font-medium">
+                    ({user.payoff_strategy === "avalanche" ? "Avalanche" : "Snowball"} Method)
+                  </span>
+                </p>
+              )}
+            </div>
             {!user?.credit_score && (
               <Link to={createPageUrl("Profile")}>
                 <Button variant="outline" size="sm">
@@ -112,12 +159,20 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {debts.map((debt) => (
-                <DebtCard
-                  key={debt.id}
-                  debt={debt}
-                  onClick={() => window.location.href = createPageUrl("DebtDetail") + `?id=${debt.id}`}
-                />
+              {sortedDebts.map((debt, index) => (
+                <div key={debt.id} className="relative">
+                  {index === 0 && user?.payoff_strategy && (
+                    <div className="absolute -top-3 left-4 z-10">
+                      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                        🎯 Focus Here First
+                      </div>
+                    </div>
+                  )}
+                  <DebtCard
+                    debt={debt}
+                    onClick={() => window.location.href = createPageUrl("DebtDetail") + `?id=${debt.id}`}
+                  />
+                </div>
               ))}
             </div>
           )}

@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -28,9 +29,14 @@ const navigationItems = [
     icon: CreditCard,
   },
   {
+    title: "Payoff Strategy",
+    url: createPageUrl("Strategy"),
+    icon: TrendingUp,
+  },
+  {
     title: "Profile",
     url: createPageUrl("Profile"),
-    icon: TrendingUp,
+    icon: DollarSign,
   },
 ];
 
