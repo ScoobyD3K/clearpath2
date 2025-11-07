@@ -4,12 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { TrendingUp, DollarSign, Save } from "lucide-react";
+import { DollarSign, Save, User as UserIcon } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
-  const [creditScore, setCreditScore] = useState("");
   const [monthlyIncome, setMonthlyIncome] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
@@ -17,7 +16,6 @@ export default function Profile() {
     const fetchUser = async () => {
       const userData = await base44.auth.me();
       setUser(userData);
-      setCreditScore(userData.credit_score || "");
       setMonthlyIncome(userData.monthly_income || "");
     };
     fetchUser();
@@ -29,7 +27,6 @@ export default function Profile() {
 
     try {
       await base44.auth.updateMe({
-        credit_score: creditScore ? parseFloat(creditScore) : null,
         monthly_income: monthlyIncome ? parseFloat(monthlyIncome) : null,
       });
       
@@ -65,7 +62,7 @@ export default function Profile() {
             <CardHeader className="border-b border-slate-100">
               <CardTitle className="flex items-center gap-2">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-white" />
+                  <UserIcon className="w-5 h-5 text-white" />
                 </div>
                 Account Information
               </CardTitle>
@@ -101,25 +98,6 @@ export default function Profile() {
             </CardHeader>
             <CardContent className="p-6">
               <form onSubmit={handleSave} className="space-y-6">
-                <div>
-                  <Label htmlFor="creditScore" className="text-slate-700 font-medium">
-                    Credit Score
-                  </Label>
-                  <p className="text-sm text-slate-500 mb-2">
-                    Enter your current credit score (300-850)
-                  </p>
-                  <Input
-                    id="creditScore"
-                    type="number"
-                    min="300"
-                    max="850"
-                    value={creditScore}
-                    onChange={(e) => setCreditScore(e.target.value)}
-                    placeholder="e.g., 720"
-                    className="text-lg"
-                  />
-                </div>
-
                 <div>
                   <Label htmlFor="monthlyIncome" className="text-slate-700 font-medium">
                     Monthly Income

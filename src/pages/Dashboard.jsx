@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -86,14 +87,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <StatCard
-            title="Credit Score"
-            value={user?.credit_score || "—"}
-            icon={TrendingUp}
-            bgGradient="bg-gradient-to-br from-emerald-500 to-teal-600"
-            iconColor="text-emerald-600"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <StatCard
             title="Total Debt"
             value={`$${totalDebt.toLocaleString()}`}
@@ -130,13 +124,6 @@ export default function Dashboard() {
                 </p>
               )}
             </div>
-            {!user?.credit_score && (
-              <Link to={createPageUrl("Profile")}>
-                <Button variant="outline" size="sm">
-                  Complete Profile
-                </Button>
-              </Link>
-            )}
           </div>
           
           {isLoading ? (
