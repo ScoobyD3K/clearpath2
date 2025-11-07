@@ -5,15 +5,17 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Plus, TrendingUp, DollarSign, CreditCard, Target, Zap } from "lucide-react";
+import { Plus, TrendingUp, DollarSign, CreditCard, Target, Zap, Settings } from "lucide-react";
 import StatCard from "../components/dashboard/StatCard";
 import DebtCard from "../components/dashboard/DebtCard";
 import StrategySelector from "../components/strategy/StrategySelector";
+import NavigationEditor from "../components/dashboard/NavigationEditor";
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [showStrategySelector, setShowStrategySelector] = useState(false);
   const [editingDebt, setEditingDebt] = useState(null);
+  const [showNavEditor, setShowNavEditor] = useState(false);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -72,6 +74,14 @@ export default function Dashboard() {
             <p className="text-slate-600 mt-2">Track your journey to financial freedom</p>
           </div>
           <div className="flex gap-3">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setShowNavEditor(true)}
+              title="Customize Navigation"
+            >
+              <Settings className="w-4 h-4" />
+            </Button>
             <Link to={createPageUrl("Strategy")}>
               <Button variant="outline" className="gap-2">
                 <Zap className="w-4 h-4" />
@@ -175,6 +185,12 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+
+      <NavigationEditor
+        open={showNavEditor}
+        onOpenChange={setShowNavEditor}
+        user={user}
+      />
     </div>
   );
 }

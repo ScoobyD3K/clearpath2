@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { LayoutDashboard, CreditCard, TrendingUp, DollarSign, Bell, BarChart3 } from "lucide-react";
@@ -16,42 +16,73 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import NotificationBell from "./components/layout/NotificationBell";
+import { base44 } from "@/api/base44Client";
 
-const navigationItems = [
+const defaultNavigationItems = [
   {
     title: "Dashboard",
-    url: createPageUrl("Dashboard"),
-    icon: LayoutDashboard,
+    page: "Dashboard",
+    icon: "LayoutDashboard",
+    visible: true,
   },
   {
     title: "My Debts",
-    url: createPageUrl("Debts"),
-    icon: CreditCard,
+    page: "Debts",
+    icon: "CreditCard",
+    visible: true,
   },
   {
     title: "Payoff Strategy",
-    url: createPageUrl("Strategy"),
-    icon: TrendingUp,
+    page: "Strategy",
+    icon: "TrendingUp",
+    visible: true,
   },
   {
     title: "Statistics",
-    url: createPageUrl("Statistics"),
-    icon: BarChart3,
+    page: "Statistics",
+    icon: "BarChart3",
+    visible: true,
   },
   {
     title: "Notifications",
-    url: createPageUrl("Notifications"),
-    icon: Bell,
+    page: "Notifications",
+    icon: "Bell",
+    visible: true,
   },
   {
     title: "Profile",
-    url: createPageUrl("Profile"),
-    icon: DollarSign,
+    page: "Profile",
+    icon: "DollarSign",
+    visible: true,
   },
 ];
 
+const iconMap = {
+  LayoutDashboard,
+  CreditCard,
+  TrendingUp,
+  BarChart3,
+  Bell,
+  DollarSign,
+};
+
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
+  const [navigationItems, setNavigationItems] = useState(defaultNavigationItems);
+
+  useEffect(() => {
+    const fetchUserNav = async () => {
+      try {
+        const user = await base44.auth.me();
+        if (user?.custom_navigation && user.custom_navigation.length > 0) {
+          setNavigationItems(user.custom_navigation.filter(item => item.visible));
+        }
+      } catch (error) {
+        // User not logged in or error fetching, use default
+      }
+    };
+    fetchUserNav();
+  }, []);
 
   return (
     <SidebarProvider>
@@ -76,21 +107,25 @@ export default function Layout({ children, currentPageName }) {
               </SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {navigationItems.map((item) => (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton 
-                        asChild 
-                        className={`hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 rounded-lg mb-1 ${
-                          location.pathname === item.url ? 'bg-blue-100 text-blue-700 shadow-sm' : ''
-                        }`}
-                      >
-                        <Link to={item.url} className="flex items-center gap-3 px-3 py-2.5">
-                          <item.icon className="w-5 h-5" />
-                          <span className="font-medium">{item.title}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
+                  {navigationItems.map((item) => {
+                    const Icon = iconMap[item.icon];
+                    const url = createPageUrl(item.page);
+                    return (
+                      <SidebarMenuItem key={item.page}>
+                        <SidebarMenuButton 
+                          asChild 
+                          className={`hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 rounded-lg mb-1 ${
+                            location.pathname === url ? 'bg-blue-100 text-blue-700 shadow-sm' : ''
+                          }`}
+                        >
+                          <Link to={url} className="flex items-center gap-3 px-3 py-2.5">
+                            {Icon && <Icon className="w-5 h-5" />}
+                            <span className="font-medium">{item.title}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
