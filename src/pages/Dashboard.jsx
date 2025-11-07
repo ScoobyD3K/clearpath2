@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -129,11 +130,11 @@ export default function Dashboard() {
             iconColor="text-rose-600"
           />
           <EditableStatCard
-            title="Monthly Income"
+            title="Savings"
             value={user?.monthly_income ? `$${user.monthly_income.toLocaleString()}` : "$0"}
             icon={DollarSign}
-            bgGradient="bg-gradient-to-br from-blue-500 to-indigo-600"
-            iconColor="text-blue-600"
+            bgGradient="bg-gradient-to-br from-green-500 to-emerald-600"
+            iconColor="text-green-600"
             editable={true}
             onSave={(newValue) => updateMonthlyIncomeMutation.mutate(newValue)}
           />
