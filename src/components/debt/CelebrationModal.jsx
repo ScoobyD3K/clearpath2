@@ -1,18 +1,30 @@
 import React from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { PartyPopper, TrendingUp, DollarSign } from "lucide-react";
-import Confetti from 'react-confetti';
+import { PartyPopper, TrendingUp, DollarSign, Sparkles } from "lucide-react";
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
 export default function CelebrationModal({ open, onOpenChange, debtName, totalAmount }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      {open && <Confetti numberOfPieces={500} recycle={false} />}
-      <DialogContent className="max-w-md">
-        <div className="text-center py-6">
-          <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
+      <DialogContent className="max-w-md relative overflow-hidden">
+        {/* Animated background effects */}
+        <div className="absolute inset-0 bg-gradient-to-br from-green-100 via-emerald-50 to-blue-50 animate-pulse" />
+        
+        {/* Floating sparkles */}
+        <div className="absolute top-10 left-10 animate-bounce delay-100">
+          <Sparkles className="w-6 h-6 text-yellow-400" />
+        </div>
+        <div className="absolute top-20 right-10 animate-bounce delay-300">
+          <Sparkles className="w-4 h-4 text-green-400" />
+        </div>
+        <div className="absolute bottom-20 left-20 animate-bounce delay-500">
+          <Sparkles className="w-5 h-5 text-blue-400" />
+        </div>
+        
+        <div className="relative text-center py-6">
+          <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce shadow-2xl">
             <PartyPopper className="w-10 h-10 text-white" />
           </div>
           
@@ -27,7 +39,7 @@ export default function CelebrationModal({ open, onOpenChange, debtName, totalAm
             {debtName}!
           </p>
           
-          <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-6 mb-6">
+          <div className="bg-white rounded-lg p-6 mb-6 shadow-lg border-2 border-green-200">
             <div className="flex items-center justify-center gap-2 mb-2">
               <DollarSign className="w-5 h-5 text-green-600" />
               <span className="text-sm text-slate-600">Total Amount Eliminated</span>
