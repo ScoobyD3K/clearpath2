@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -74,10 +75,47 @@ export default function DebtDetail() {
       const payment = await base44.entities.Payment.create(data);
       
       const newBalance = debt.current_balance - parseFloat(data.amount);
+      const isPaidOff = newBalance <= 0;
+      
       await base44.entities.Debt.update(debtId, {
         current_balance: Math.max(0, newBalance),
-        status: newBalance <= 0 ? "paid_off" : "active",
+        status: isPaidOff ? "paid_off" : "active",
       });
+
+      const user = await base44.auth.me();
+      
+      if (isPaidOff) {
+        await base44.entities.Notification.create({
+          title: "🎉 Debt Paid Off!",
+          message: `Congratulations! You've completely paid off your ${debt.name}. That's $${debt.total_amount.toLocaleString()} of debt eliminated!`,
+          type: "debt_paid_off",
+          debt_id: debtId,
+          user_email: user.email,
+          is_read: false,
+        });
+
+        if (user.email_notifications !== false) {
+          await base44.integrations.Core.SendEmail({
+            to: user.email,
+            subject: `🎉 Congratulations! ${debt.name} Paid Off!`,
+            body: `
+              <h2>Amazing Achievement! 🎉</h2>
+              <p>You've completely paid off your <strong>${debt.name}</strong>!</p>
+              <p>Total amount paid: <strong>$${debt.total_amount.toLocaleString()}</strong></p>
+              <p>Keep up the great work on your journey to financial freedom!</p>
+            `,
+          });
+        }
+      } else if (debt.minimum_payment && parseFloat(data.amount) >= debt.minimum_payment * 2) {
+        await base44.entities.Notification.create({
+          title: "💪 Great Payment!",
+          message: `Awesome! You paid $${parseFloat(data.amount).toLocaleString()} on ${debt.name}, which is ${Math.round((parseFloat(data.amount) / debt.minimum_payment) * 100)}% more than the minimum. You're accelerating your debt freedom!`,
+          type: "great_payment",
+          debt_id: debtId,
+          user_email: user.email,
+          is_read: false,
+        });
+      }
       
       return payment;
     },
@@ -85,6 +123,7 @@ export default function DebtDetail() {
       queryClient.invalidateQueries({ queryKey: ['debt', debtId] });
       queryClient.invalidateQueries({ queryKey: ['payments', debtId] });
       queryClient.invalidateQueries({ queryKey: ['debts'] });
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
       toast.success("Payment recorded successfully!");
       setShowPaymentForm(false);
       setPaymentData({
