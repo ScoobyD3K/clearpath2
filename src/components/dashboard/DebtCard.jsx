@@ -2,11 +2,12 @@ import React from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Calendar, Percent, DollarSign, TrendingDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Calendar, Percent, DollarSign, TrendingDown, Edit } from "lucide-react";
 import { format, addMonths } from "date-fns";
 import { cn } from "@/lib/utils";
 
-export default function DebtCard({ debt, onClick }) {
+export default function DebtCard({ debt, onClick, onEdit }) {
   const calculatePayoffDate = () => {
     if (!debt.minimum_payment || debt.minimum_payment <= 0) return null;
     
@@ -30,14 +31,26 @@ export default function DebtCard({ debt, onClick }) {
 
   return (
     <Card 
-      className="hover:shadow-lg transition-all duration-300 cursor-pointer border-slate-200 bg-white"
+      className="hover:shadow-lg transition-all duration-300 cursor-pointer border-slate-200 bg-white relative group"
       onClick={onClick}
     >
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={(e) => {
+          e.stopPropagation();
+          onEdit?.(debt);
+        }}
+        className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity bg-white hover:bg-slate-100 shadow-md z-10"
+      >
+        <Edit className="w-4 h-4 text-slate-600" />
+      </Button>
+
       <CardHeader className="pb-3">
         <div className="flex justify-between items-start">
-          <div className="flex-1">
+          <div className="flex-1 pr-8">
             <h3 className="font-semibold text-lg text-slate-900">{debt.name}</h3>
-            <div className="flex items-center gap-2 mt-1">
+            <div className="flex items-center gap-2 mt-1 flex-wrap">
               <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
                 <Percent className="w-3 h-3 mr-1" />
                 {debt.interest_rate}% APR

@@ -13,6 +13,7 @@ import StrategySelector from "../components/strategy/StrategySelector";
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [showStrategySelector, setShowStrategySelector] = useState(false);
+  const [editingDebt, setEditingDebt] = useState(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -38,6 +39,14 @@ export default function Dashboard() {
       const updatedUser = await base44.auth.me();
       setUser(updatedUser);
       setShowStrategySelector(false);
+    },
+  });
+
+  const updateDebtMutation = useMutation({
+    mutationFn: ({ id, data }) => base44.entities.Debt.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['debts'] });
+      setEditingDebt(null);
     },
   });
 
@@ -158,6 +167,7 @@ export default function Dashboard() {
                   <DebtCard
                     debt={debt}
                     onClick={() => window.location.href = createPageUrl("DebtDetail") + `?id=${debt.id}`}
+                    onEdit={(debt) => window.location.href = createPageUrl("DebtDetail") + `?id=${debt.id}`}
                   />
                 </div>
               ))}

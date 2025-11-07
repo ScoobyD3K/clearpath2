@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -240,6 +241,7 @@ export default function Debts() {
               key={debt.id}
               debt={debt}
               onClick={() => window.location.href = createPageUrl("DebtDetail") + `?id=${debt.id}`}
+              onEdit={(debt) => window.location.href = createPageUrl("DebtDetail") + `?id=${debt.id}`}
             />
           ))}
         </div>
