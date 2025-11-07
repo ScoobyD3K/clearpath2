@@ -77,6 +77,7 @@ export default function Dashboard() {
 
   const totalDebt = debts.reduce((sum, debt) => sum + debt.current_balance, 0);
   const totalMinPayments = debts.reduce((sum, debt) => sum + (debt.minimum_payment || 0), 0);
+  const netPosition = (user?.monthly_income || 0) - totalDebt;
 
   return (
     <div className="p-4 md:p-8 min-h-screen">
@@ -121,7 +122,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard
             title="Total Debt"
             value={`$${totalDebt.toLocaleString()}`}
@@ -137,6 +138,15 @@ export default function Dashboard() {
             iconColor="text-green-600"
             editable={true}
             onSave={(newValue) => updateMonthlyIncomeMutation.mutate(newValue)}
+          />
+          <StatCard
+            title="Net Position"
+            value={`${netPosition >= 0 ? '+' : ''}$${netPosition.toLocaleString()}`}
+            icon={TrendingUp}
+            bgGradient={netPosition >= 0 
+              ? "bg-gradient-to-br from-purple-500 to-indigo-600" 
+              : "bg-gradient-to-br from-slate-500 to-slate-700"}
+            iconColor={netPosition >= 0 ? "text-purple-600" : "text-slate-600"}
           />
           <StatCard
             title="Min Payments"
