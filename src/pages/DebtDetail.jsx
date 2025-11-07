@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { format, addMonths } from "date-fns";
 import { toast } from "sonner";
+import CelebrationModal from "../components/debt/CelebrationModal";
 
 export default function DebtDetail() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -25,6 +26,8 @@ export default function DebtDetail() {
     payment_date: format(new Date(), "yyyy-MM-dd"),
     notes: "",
   });
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [paidOffDebtInfo, setPaidOffDebtInfo] = useState(null);
 
   const queryClient = useQueryClient();
 
@@ -85,6 +88,12 @@ export default function DebtDetail() {
       const user = await base44.auth.me();
       
       if (isPaidOff) {
+        setPaidOffDebtInfo({
+          name: debt.name,
+          amount: debt.total_amount,
+        });
+        setShowCelebration(true);
+
         await base44.entities.Notification.create({
           title: "🎉 Debt Paid Off!",
           message: `Congratulations! You've completely paid off your ${debt.name}. That's $${debt.total_amount.toLocaleString()} of debt eliminated!`,
@@ -583,6 +592,13 @@ export default function DebtDetail() {
           </div>
         </div>
       </div>
+      
+      <CelebrationModal
+        open={showCelebration}
+        onOpenChange={setShowCelebration}
+        debtName={paidOffDebtInfo?.name || ""}
+        totalAmount={paidOffDebtInfo?.amount || 0}
+      />
     </div>
   );
 }
