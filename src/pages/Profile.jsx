@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -16,7 +17,8 @@ export default function Profile() {
     const fetchUser = async () => {
       const userData = await base44.auth.me();
       setUser(userData);
-      setMonthlyIncome(userData.monthly_income || "");
+      // Assuming monthly_income field is being repurposed for savings in the backend
+      setMonthlyIncome(userData.monthly_income || ""); 
     };
     fetchUser();
   }, []);
@@ -26,6 +28,7 @@ export default function Profile() {
     setIsSaving(true);
 
     try {
+      // The backend field name monthly_income is being reused for what the UI now calls "Savings"
       await base44.auth.updateMe({
         monthly_income: monthlyIncome ? parseFloat(monthlyIncome) : null,
       });
@@ -100,15 +103,15 @@ export default function Profile() {
               <form onSubmit={handleSave} className="space-y-6">
                 <div>
                   <Label htmlFor="monthlyIncome" className="text-slate-700 font-medium">
-                    Monthly Income
+                    Savings
                   </Label>
                   <p className="text-sm text-slate-500 mb-2">
-                    Your total monthly income from salary
+                    Your total savings or available funds
                   </p>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg">$</span>
                     <Input
-                      id="monthlyIncome"
+                      id="monthlyIncome" // The ID remains 'monthlyIncome' as per the outline
                       type="number"
                       min="0"
                       step="0.01"

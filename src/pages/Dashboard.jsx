@@ -221,7 +221,7 @@ export default function Dashboard() {
             iconColor="text-rose-600"
           />
           <EditableStatCard
-            title="Monthly Income"
+            title="Savings"
             value={user?.monthly_income ? `$${user.monthly_income.toLocaleString()}` : "$0"}
             icon={DollarSign}
             bgGradient="bg-gradient-to-br from-green-500 to-emerald-600"
