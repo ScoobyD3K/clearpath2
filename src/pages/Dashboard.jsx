@@ -13,6 +13,7 @@ import StrategySelector from "../components/strategy/StrategySelector";
 import NavigationEditor from "../components/dashboard/NavigationEditor";
 import CelebrationModal from "../components/debt/CelebrationModal";
 import QuickPaymentModal from "../components/debt/QuickPaymentModal";
+import SavingsAdjustmentModal from "../components/dashboard/SavingsAdjustmentModal";
 import { format } from "date-fns";
 import { toast } from "sonner";
 
@@ -25,6 +26,7 @@ export default function Dashboard() {
   const [quickPaymentType, setQuickPaymentType] = useState("pay");
   const [showCelebration, setShowCelebration] = useState(false);
   const [paidOffDebtInfo, setPaidOffDebtInfo] = useState(null);
+  const [showSavingsAdjustment, setShowSavingsAdjustment] = useState(false);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -66,13 +68,21 @@ export default function Dashboard() {
     onSuccess: async () => {
       const updatedUser = await base44.auth.me();
       setUser(updatedUser);
-      toast.success("Monthly income updated!");
+      toast.success("Savings updated!");
       queryClient.invalidateQueries({ queryKey: ['user'] });
     },
     onError: () => {
-      toast.error("Failed to update income");
+      toast.error("Failed to update savings");
     }
   });
+
+  const handleSavingsAdjustment = async (amount, type) => {
+    const currentAmount = parseFloat(user?.monthly_income) || 0;
+    const newAmount = type === "add" ? currentAmount + amount : Math.max(0, currentAmount - amount);
+    
+    await updateMonthlyIncomeMutation.mutateAsync(newAmount);
+    toast.success(`${type === "add" ? "Added" : "Subtracted"} $${amount.toLocaleString()} ${type === "add" ? "to" : "from"} savings!`);
+  };
 
   const quickPaymentMutation = useMutation({
     mutationFn: async ({ debt, amount, type }) => {
@@ -246,15 +256,17 @@ export default function Dashboard() {
             bgGradient="bg-gradient-to-br from-rose-500 to-pink-600"
             iconColor="text-rose-600"
           />
-          <EditableStatCard
-            title="Savings"
-            value={user?.monthly_income ? `$${user.monthly_income.toLocaleString()}` : "$0"}
-            icon={DollarSign}
-            bgGradient="bg-gradient-to-br from-green-500 to-emerald-600"
-            iconColor="text-green-600"
-            editable={true}
-            onSave={(newValue) => updateMonthlyIncomeMutation.mutate(newValue)}
-          />
+          <div onClick={() => setShowSavingsAdjustment(true)} className="cursor-pointer">
+            <EditableStatCard
+              title="Savings"
+              value={user?.monthly_income ? `$${user.monthly_income.toLocaleString()}` : "$0"}
+              icon={DollarSign}
+              bgGradient="bg-gradient-to-br from-green-500 to-emerald-600"
+              iconColor="text-green-600"
+              // The editable prop and onSave prop are removed here because
+              // the click on the div wrapper now triggers the modal for adjustment.
+            />
+          </div>
           <StatCard
             title="Net Position"
             value={`${netPosition >= 0 ? '+' : ''}$${netPosition.toLocaleString()}`}
@@ -357,6 +369,13 @@ export default function Dashboard() {
         onOpenChange={setShowCelebration}
         debtName={paidOffDebtInfo?.name || ""}
         totalAmount={paidOffDebtInfo?.amount || 0}
+      />
+
+      <SavingsAdjustmentModal
+        open={showSavingsAdjustment}
+        onOpenChange={setShowSavingsAdjustment}
+        currentAmount={user?.monthly_income || 0}
+        onSubmit={handleSavingsAdjustment}
       />
     </div>
   );
