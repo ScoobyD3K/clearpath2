@@ -1,34 +1,87 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { DollarSign, Save, User as UserIcon } from "lucide-react";
+import { DollarSign, Save, User as UserIcon, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
   const [monthlyIncome, setMonthlyIncome] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(null);
 
   useEffect(() => {
     const fetchUser = async () => {
       const userData = await base44.auth.me();
       setUser(userData);
-      // Assuming monthly_income field is being repurposed for savings in the backend
-      setMonthlyIncome(userData.monthly_income || ""); 
+      setMonthlyIncome(userData.monthly_income || "");
+      setProfilePicture(userData.profile_picture || null);
     };
     fetchUser();
   }, []);
+
+  const handleProfilePictureUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error("Please upload an image file");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be less than 5MB");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      
+      await base44.auth.updateMe({
+        profile_picture: file_url,
+      });
+
+      setProfilePicture(file_url);
+      const updatedUser = await base44.auth.me();
+      setUser(updatedUser);
+      
+      toast.success("Profile picture updated!");
+    } catch (error) {
+      toast.error("Failed to upload profile picture");
+    }
+    setIsUploading(false);
+  };
+
+  const handleRemoveProfilePicture = async () => {
+    setIsUploading(true);
+    try {
+      await base44.auth.updateMe({
+        profile_picture: null,
+      });
+
+      setProfilePicture(null);
+      const updatedUser = await base44.auth.me();
+      setUser(updatedUser);
+      
+      toast.success("Profile picture removed");
+    } catch (error) {
+      toast.error("Failed to remove profile picture");
+    }
+    setIsUploading(false);
+  };
 
   const handleSave = async (e) => {
     e.preventDefault();
     setIsSaving(true);
 
     try {
-      // The backend field name monthly_income is being reused for what the UI now calls "Savings"
       await base44.auth.updateMe({
         monthly_income: monthlyIncome ? parseFloat(monthlyIncome) : null,
       });
@@ -57,7 +110,7 @@ export default function Profile() {
       <div className="max-w-3xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-slate-900">Your Profile</h1>
-          <p className="text-slate-600 mt-2">Update your financial information</p>
+          <p className="text-slate-600 mt-2">Update your personal and financial information</p>
         </div>
 
         <div className="space-y-6">
@@ -70,22 +123,85 @@ export default function Profile() {
                 Account Information
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6 space-y-4">
+            <CardContent className="p-6 space-y-6">
+              {/* Profile Picture Section */}
               <div>
-                <Label className="text-slate-700">Full Name</Label>
-                <Input 
-                  value={user.full_name} 
-                  disabled 
-                  className="mt-1 bg-slate-50"
-                />
+                <Label className="text-slate-700 mb-3 block">Profile Picture</Label>
+                <div className="flex items-center gap-6">
+                  <div className="relative">
+                    {profilePicture ? (
+                      <img
+                        src={profilePicture}
+                        alt="Profile"
+                        className="w-24 h-24 rounded-full object-cover border-4 border-slate-200 shadow-lg"
+                      />
+                    ) : (
+                      <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                        <span className="text-white text-3xl font-bold">
+                          {user.full_name?.charAt(0).toUpperCase() || 'U'}
+                        </span>
+                      </div>
+                    )}
+                    {profilePicture && (
+                      <button
+                        onClick={handleRemoveProfilePicture}
+                        disabled={isUploading}
+                        className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center text-white shadow-lg transition-colors disabled:opacity-50"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                  
+                  <div className="flex-1">
+                    <Input
+                      id="profile-picture-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleProfilePictureUpload}
+                      disabled={isUploading}
+                      className="hidden"
+                    />
+                    <Label
+                      htmlFor="profile-picture-upload"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-slate-300 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors text-sm font-medium text-slate-700"
+                    >
+                      {isUploading ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600" />
+                          Uploading...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-4 h-4" />
+                          Upload Picture
+                        </>
+                      )}
+                    </Label>
+                    <p className="text-xs text-slate-500 mt-2">
+                      JPG, PNG or GIF. Max size 5MB.
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <Label className="text-slate-700">Email</Label>
-                <Input 
-                  value={user.email} 
-                  disabled 
-                  className="mt-1 bg-slate-50"
-                />
+
+              <div className="border-t border-slate-200 pt-6 space-y-4">
+                <div>
+                  <Label className="text-slate-700">Full Name</Label>
+                  <Input 
+                    value={user.full_name} 
+                    disabled 
+                    className="mt-1 bg-slate-50"
+                  />
+                </div>
+                <div>
+                  <Label className="text-slate-700">Email</Label>
+                  <Input 
+                    value={user.email} 
+                    disabled 
+                    className="mt-1 bg-slate-50"
+                  />
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -111,7 +227,7 @@ export default function Profile() {
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg">$</span>
                     <Input
-                      id="monthlyIncome" // The ID remains 'monthlyIncome' as per the outline
+                      id="monthlyIncome"
                       type="number"
                       min="0"
                       step="0.01"

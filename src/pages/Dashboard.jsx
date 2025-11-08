@@ -173,11 +173,20 @@ export default function Dashboard() {
     <div className="p-4 md:p-8 min-h-screen">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-slate-900">
-              Welcome back{user?.full_name ? `, ${user.full_name.split(' ')[0]}` : ''}
-            </h1>
-            <p className="text-slate-600 mt-2">Track your journey to financial freedom</p>
+          <div className="flex items-center gap-4">
+            {user?.profile_picture && (
+              <img
+                src={user.profile_picture}
+                alt={user.full_name}
+                className="w-16 h-16 rounded-full object-cover border-4 border-white shadow-lg hidden md:block"
+              />
+            )}
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-slate-900">
+                Welcome back{user?.full_name ? `, ${user.full_name.split(' ')[0]}` : ''}!
+              </h1>
+              <p className="text-slate-600 mt-2">Track your journey to financial freedom</p>
+            </div>
           </div>
           <div className="flex gap-3">
             <Button

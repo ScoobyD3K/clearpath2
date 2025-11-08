@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -76,13 +75,15 @@ const iconMap = {
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
   const [navigationItems, setNavigationItems] = useState(defaultNavigationItems);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const fetchUserNav = async () => {
       try {
-        const user = await base44.auth.me();
-        if (user?.custom_navigation && user.custom_navigation.length > 0) {
-          setNavigationItems(user.custom_navigation.filter(item => item.visible));
+        const userData = await base44.auth.me();
+        setUser(userData);
+        if (userData?.custom_navigation && userData.custom_navigation.length > 0) {
+          setNavigationItems(userData.custom_navigation.filter(item => item.visible));
         }
       } catch (error) {
         // User not logged in or error fetching, use default
@@ -142,12 +143,29 @@ export default function Layout({ children, currentPageName }) {
         <main className="flex-1 flex flex-col">
           <header className="bg-white/80 backdrop-blur-sm border-b border-slate-200 px-6 py-4 sticky top-0 z-10">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4 md:hidden">
-                <SidebarTrigger className="hover:bg-slate-100 p-2 rounded-lg transition-colors" />
-                <h1 className="text-xl font-bold text-slate-900">DebtFree</h1>
+              <div className="flex items-center gap-4">
+                <SidebarTrigger className="hover:bg-slate-100 p-2 rounded-lg transition-colors md:hidden" />
+                <h1 className="text-xl font-bold text-slate-900 md:hidden">DebtFree</h1>
               </div>
-              <div className="ml-auto">
+              <div className="ml-auto flex items-center gap-4">
                 <NotificationBell />
+                {user && (
+                  <Link to={createPageUrl("Profile")}>
+                    {user.profile_picture ? (
+                      <img
+                        src={user.profile_picture}
+                        alt={user.full_name}
+                        className="w-10 h-10 rounded-full object-cover border-2 border-slate-200 hover:border-blue-400 transition-colors cursor-pointer shadow-sm"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center hover:shadow-lg transition-shadow cursor-pointer">
+                        <span className="text-white text-sm font-bold">
+                          {user.full_name?.charAt(0).toUpperCase() || 'U'}
+                        </span>
+                      </div>
+                    )}
+                  </Link>
+                )}
               </div>
             </div>
           </header>
