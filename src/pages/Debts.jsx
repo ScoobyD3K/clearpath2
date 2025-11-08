@@ -100,6 +100,17 @@ export default function Debts() {
     }
   });
 
+  const deleteDebtMutation = useMutation({
+    mutationFn: (debtId) => base44.entities.Debt.delete(debtId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['debts'] });
+      toast.success("Debt deleted successfully!");
+    },
+    onError: () => {
+      toast.error("Failed to delete debt");
+    }
+  });
+
   const resetForm = () => {
     setFormData({
       name: "",
@@ -143,6 +154,12 @@ export default function Debts() {
       amount, 
       type: quickPaymentType 
     });
+  };
+
+  const handleDeleteDebt = (debt) => {
+    if (confirm(`Are you sure you want to delete "${debt.name}"? This action cannot be undone and will remove all associated payment history.`)) {
+      deleteDebtMutation.mutate(debt.id);
+    }
   };
 
   return (
@@ -314,6 +331,7 @@ export default function Debts() {
                 setQuickPaymentDebt(debt);
                 setQuickPaymentType("add");
               }}
+              onDelete={handleDeleteDebt}
             />
           ))}
         </div>

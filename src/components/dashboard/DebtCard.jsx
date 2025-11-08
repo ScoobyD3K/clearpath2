@@ -3,11 +3,11 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Calendar, Percent, DollarSign, TrendingDown, Edit, Plus, Minus } from "lucide-react";
+import { Calendar, Percent, DollarSign, TrendingDown, Edit, Plus, Minus, X } from "lucide-react";
 import { format, addMonths } from "date-fns";
 import { cn } from "@/lib/utils";
 
-export default function DebtCard({ debt, onClick, onEdit, onQuickPay, onQuickAdd }) {
+export default function DebtCard({ debt, onClick, onEdit, onQuickPay, onQuickAdd, onDelete }) {
   const calculatePayoffDate = () => {
     if (!debt.minimum_payment || debt.minimum_payment <= 0) return null;
     
@@ -33,6 +33,21 @@ export default function DebtCard({ debt, onClick, onEdit, onQuickPay, onQuickAdd
     <Card 
       className="hover:shadow-lg transition-all duration-300 border-slate-200 bg-white relative group"
     >
+      <div className="absolute top-3 left-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete?.(debt);
+          }}
+          className="h-7 w-7 bg-red-100 hover:bg-red-200 text-red-700 shadow-md"
+          title="Delete Debt"
+        >
+          <X className="w-4 h-4" />
+        </Button>
+      </div>
+
       <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
         <Button
           variant="ghost"
@@ -74,7 +89,7 @@ export default function DebtCard({ debt, onClick, onEdit, onQuickPay, onQuickAdd
 
       <CardHeader className="pb-3 cursor-pointer" onClick={onClick}>
         <div className="flex justify-between items-start">
-          <div className="flex-1 pr-20">
+          <div className="flex-1 pr-24 pl-8">
             <h3 className="font-semibold text-lg text-slate-900">{debt.name}</h3>
             <div className="flex items-center gap-2 mt-1 flex-wrap">
               <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
