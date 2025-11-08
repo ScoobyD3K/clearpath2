@@ -1,15 +1,17 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { DollarSign, Save, User as UserIcon, Upload, X } from "lucide-react";
+import { DollarSign, Save, User as UserIcon, Upload, X, Plus, Minus } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
   const [monthlyIncome, setMonthlyIncome] = useState("");
+  const [adjustmentAmount, setAdjustmentAmount] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
@@ -75,6 +77,35 @@ export default function Profile() {
       toast.error("Failed to remove profile picture");
     }
     setIsUploading(false);
+  };
+
+  const handleQuickAdjustment = async (type) => {
+    const amount = parseFloat(adjustmentAmount);
+    if (isNaN(amount) || amount <= 0) {
+      toast.error("Please enter a valid amount");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const currentAmount = parseFloat(monthlyIncome) || 0;
+      const newAmount = type === "add" ? currentAmount + amount : Math.max(0, currentAmount - amount);
+      
+      await base44.auth.updateMe({
+        monthly_income: newAmount,
+      });
+      
+      setMonthlyIncome(newAmount.toString());
+      setAdjustmentAmount("");
+      toast.success(`${type === "add" ? "Added" : "Subtracted"} $${amount.toLocaleString()} ${type === "add" ? "to" : "from"} savings!`);
+      
+      const updatedUser = await base44.auth.me();
+      setUser(updatedUser);
+    } catch (error) {
+      console.error("Failed to update savings:", error);
+      toast.error("Failed to update savings");
+    }
+    setIsSaving(false);
   };
 
   const handleSave = async (e) => {
@@ -236,6 +267,50 @@ export default function Profile() {
                       placeholder="e.g., 5000"
                       className="pl-8 text-lg"
                     />
+                  </div>
+                </div>
+
+                <div className="border-t border-slate-200 pt-6">
+                  <Label className="text-slate-700 font-medium mb-3 block">
+                    Quick Adjustment
+                  </Label>
+                  <p className="text-sm text-slate-500 mb-3">
+                    Add or subtract amounts from your savings balance
+                  </p>
+                  <div className="space-y-3">
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        value={adjustmentAmount}
+                        onChange={(e) => setAdjustmentAmount(e.target.value)}
+                        placeholder="Enter amount"
+                        className="pl-8"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Button
+                        type="button"
+                        onClick={() => handleQuickAdjustment("add")}
+                        disabled={isSaving || !adjustmentAmount}
+                        className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add to Savings
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={() => handleQuickAdjustment("subtract")}
+                        disabled={isSaving || !adjustmentAmount}
+                        variant="outline"
+                        className="border-red-200 text-red-700 hover:bg-red-50"
+                      >
+                        <Minus className="w-4 h-4 mr-2" />
+                        Subtract from Savings
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
