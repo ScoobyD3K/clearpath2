@@ -94,11 +94,24 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-slate-50 to-blue-50">
-        <Sidebar className="border-r border-slate-200">
+      <div className="min-h-screen flex w-full relative">
+        {/* Beach Background */}
+        <div 
+          className="fixed inset-0 z-0"
+          style={{
+            backgroundImage: 'url(https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundAttachment: 'fixed'
+          }}
+        >
+          <div className="absolute inset-0 bg-white/70 backdrop-blur-sm" />
+        </div>
+
+        <Sidebar className="border-r border-slate-200 bg-white/95 backdrop-blur-md relative z-10">
           <SidebarHeader className="border-b border-slate-200 p-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
                 <DollarSign className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -122,8 +135,8 @@ export default function Layout({ children, currentPageName }) {
                       <SidebarMenuItem key={item.page}>
                         <SidebarMenuButton 
                           asChild 
-                          className={`hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 rounded-lg mb-1 ${
-                            location.pathname === url ? 'bg-blue-100 text-blue-700 shadow-sm' : ''
+                          className={`hover:bg-cyan-50 hover:text-cyan-700 transition-all duration-200 rounded-lg mb-1 ${
+                            location.pathname === url ? 'bg-cyan-100 text-cyan-700 shadow-sm' : ''
                           }`}
                         >
                           <Link to={url} className="flex items-center gap-3 px-3 py-2.5">
@@ -140,8 +153,8 @@ export default function Layout({ children, currentPageName }) {
           </SidebarContent>
         </Sidebar>
 
-        <main className="flex-1 flex flex-col">
-          <header className="bg-white/80 backdrop-blur-sm border-b border-slate-200 px-6 py-4 sticky top-0 z-10">
+        <main className="flex-1 flex flex-col relative z-10">
+          <header className="bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 py-4 sticky top-0 z-20 shadow-sm">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <SidebarTrigger className="hover:bg-slate-100 p-2 rounded-lg transition-colors md:hidden" />
@@ -155,10 +168,10 @@ export default function Layout({ children, currentPageName }) {
                       <img
                         src={user.profile_picture}
                         alt={user.full_name}
-                        className="w-10 h-10 rounded-full object-cover border-2 border-slate-200 hover:border-blue-400 transition-colors cursor-pointer shadow-sm"
+                        className="w-10 h-10 rounded-full object-cover border-2 border-cyan-200 hover:border-cyan-400 transition-colors cursor-pointer shadow-sm"
                       />
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center hover:shadow-lg transition-shadow cursor-pointer">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center hover:shadow-lg transition-shadow cursor-pointer">
                         <span className="text-white text-sm font-bold">
                           {user.full_name?.charAt(0).toUpperCase() || 'U'}
                         </span>
