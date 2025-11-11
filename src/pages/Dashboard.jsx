@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -92,7 +91,6 @@ export default function Dashboard() {
       
       const isPaidOff = newBalance === 0;
       
-      // Create payment record
       await base44.entities.Payment.create({
         debt_id: debt.id,
         amount: amount,
@@ -100,13 +98,11 @@ export default function Dashboard() {
         notes: type === "pay" ? "Quick payment" : "Balance adjustment",
       });
       
-      // Update debt
       await base44.entities.Debt.update(debt.id, {
         current_balance: newBalance,
         status: isPaidOff ? "paid_off" : "active",
       });
 
-      // Handle notifications
       if (isPaidOff) {
         setPaidOffDebtInfo({
           name: debt.name,
@@ -197,41 +193,42 @@ export default function Dashboard() {
   const netPosition = (user?.monthly_income || 0) - totalDebt;
 
   return (
-    <div className="p-4 md:p-8 min-h-screen">
+    <div className="p-3 md:p-6 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-3">
+          <div className="flex items-center gap-3">
             {user?.profile_picture && (
               <img
                 src={user.profile_picture}
                 alt={user.full_name}
-                className="w-16 h-16 rounded-full object-cover border-4 border-white shadow-lg hidden md:block"
+                className="w-12 h-12 rounded-full object-cover border-4 border-white shadow-lg hidden md:block"
               />
             )}
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-slate-900">
+              <h1 className="text-2xl md:text-3xl font-bold text-slate-900">
                 Welcome back{user?.full_name ? `, ${user.full_name.split(' ')[0]}` : ''}!
               </h1>
-              <p className="text-slate-600 mt-2">Track your journey to financial freedom</p>
+              <p className="text-sm text-slate-600 mt-1">Track your journey to financial freedom</p>
             </div>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             <Button
               variant="outline"
               size="icon"
               onClick={() => setShowNavEditor(true)}
               title="Customize Navigation"
+              className="h-9 w-9"
             >
               <Settings className="w-4 h-4" />
             </Button>
             <Link to={createPageUrl("Strategy")}>
-              <Button variant="outline" className="gap-2">
+              <Button variant="outline" className="gap-2 h-9 text-sm px-3">
                 <Zap className="w-4 h-4" />
-                Payoff Strategy
+                Strategy
               </Button>
             </Link>
             <Link to={createPageUrl("Debts")}>
-              <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg">
+              <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg h-9 text-sm px-3">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Debt
               </Button>
@@ -240,7 +237,7 @@ export default function Dashboard() {
         </div>
 
         {showStrategySelector && debts.length > 0 && (
-          <div className="mb-8">
+          <div className="mb-6">
             <StrategySelector 
               value={user?.payoff_strategy || "avalanche"}
               onChange={(strategy) => updateStrategyMutation.mutate(strategy)}
@@ -248,7 +245,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
           <StatCard
             title="Total Debt"
             value={`$${totalDebt.toLocaleString()}`}
@@ -263,8 +260,6 @@ export default function Dashboard() {
               icon={DollarSign}
               bgGradient="bg-gradient-to-br from-green-500 to-emerald-600"
               iconColor="text-green-600"
-              // The editable prop and onSave prop are removed here because
-              // the click on the div wrapper now triggers the modal for adjustment.
             />
           </div>
           <StatCard
@@ -286,11 +281,11 @@ export default function Dashboard() {
         </div>
 
         <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <h2 className="text-2xl font-bold text-slate-900">Active Debts</h2>
+              <h2 className="text-xl font-bold text-slate-900">Active Debts</h2>
               {user?.payoff_strategy && debts.length > 0 && (
-                <p className="text-sm text-slate-600 mt-1">
+                <p className="text-xs text-slate-600 mt-1">
                   Sorted by {user.payoff_strategy === "avalanche" ? "highest interest rate" : "smallest balance"} 
                   <span className="ml-1 text-blue-600 font-medium">
                     ({user.payoff_strategy === "avalanche" ? "Avalanche" : "Snowball"} Method)
@@ -301,30 +296,30 @@ export default function Dashboard() {
           </div>
           
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-64 bg-slate-100 rounded-lg animate-pulse" />
+                <div key={i} className="h-56 bg-slate-100 rounded-lg animate-pulse" />
               ))}
             </div>
           ) : debts.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border-2 border-dashed border-slate-200">
-              <CreditCard className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">No debts yet</h3>
-              <p className="text-slate-600 mb-6">Start tracking your debts to see your progress</p>
+            <div className="text-center py-12 bg-white rounded-2xl border-2 border-dashed border-slate-200">
+              <CreditCard className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+              <h3 className="text-lg font-semibold text-slate-900 mb-2">No debts yet</h3>
+              <p className="text-sm text-slate-600 mb-4">Start tracking your debts to see your progress</p>
               <Link to={createPageUrl("Debts")}>
-                <Button className="bg-gradient-to-r from-blue-600 to-indigo-600">
+                <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 h-9 text-sm">
                   <Plus className="w-4 h-4 mr-2" />
                   Add Your First Debt
                 </Button>
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {sortedDebts.map((debt, index) => (
                 <div key={debt.id} className="relative">
                   {index === 0 && user?.payoff_strategy && (
-                    <div className="absolute -top-3 left-4 z-10">
-                      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                    <div className="absolute -top-2 left-4 z-10">
+                      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
                         🎯 Focus Here First
                       </div>
                     </div>

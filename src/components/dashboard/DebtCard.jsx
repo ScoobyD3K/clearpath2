@@ -33,17 +33,17 @@ export default function DebtCard({ debt, onClick, onEdit, onQuickPay, onQuickAdd
     <Card 
       className="hover:shadow-lg transition-all duration-300 border-slate-200 bg-white relative"
     >
-      <CardHeader className="pb-3 cursor-pointer" onClick={onClick}>
+      <CardHeader className="pb-2 cursor-pointer" onClick={onClick}>
         <div className="flex justify-between items-start">
           <div className="flex-1 pr-4">
-            <h3 className="font-semibold text-lg text-slate-900">{debt.name}</h3>
+            <h3 className="font-semibold text-base text-slate-900">{debt.name}</h3>
             <div className="flex items-center gap-2 mt-1 flex-wrap">
-              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs">
                 <Percent className="w-3 h-3 mr-1" />
                 {debt.interest_rate}% APR
               </Badge>
               {debt.due_date && (
-                <Badge variant="outline" className="bg-slate-50 text-slate-700">
+                <Badge variant="outline" className="bg-slate-50 text-slate-700 text-xs">
                   <Calendar className="w-3 h-3 mr-1" />
                   Due: {debt.due_date}th
                 </Badge>
@@ -51,6 +51,7 @@ export default function DebtCard({ debt, onClick, onEdit, onQuickPay, onQuickAdd
             </div>
           </div>
           <Badge className={cn(
+            "text-xs",
             debt.status === 'paid_off' 
               ? "bg-green-100 text-green-800" 
               : "bg-orange-100 text-orange-800"
@@ -60,22 +61,22 @@ export default function DebtCard({ debt, onClick, onEdit, onQuickPay, onQuickAdd
         </div>
       </CardHeader>
       
-      <CardContent className="space-y-4 cursor-pointer pb-16" onClick={onClick}>
+      <CardContent className="space-y-3 cursor-pointer pb-12" onClick={onClick}>
         <div>
-          <div className="flex justify-between text-sm mb-2">
+          <div className="flex justify-between text-xs mb-1">
             <span className="text-slate-600">Progress</span>
             <span className="font-semibold text-slate-900">{percentPaid.toFixed(1)}% paid</span>
           </div>
-          <Progress value={percentPaid} className="h-2" />
+          <Progress value={percentPaid} className="h-1.5" />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1">
             <div className="flex items-center gap-1 text-slate-500 text-xs">
               <DollarSign className="w-3 h-3" />
               <span>Current Balance</span>
             </div>
-            <p className="text-xl font-bold text-slate-900">
+            <p className="text-lg font-bold text-slate-900">
               ${debt.current_balance.toLocaleString()}
             </p>
           </div>
@@ -85,17 +86,17 @@ export default function DebtCard({ debt, onClick, onEdit, onQuickPay, onQuickAdd
               <TrendingDown className="w-3 h-3" />
               <span>Min Payment</span>
             </div>
-            <p className="text-xl font-bold text-slate-900">
+            <p className="text-lg font-bold text-slate-900">
               ${debt.minimum_payment?.toLocaleString() || '—'}
             </p>
           </div>
         </div>
 
         {payoffDate && (
-          <div className="pt-3 border-t border-slate-100">
+          <div className="pt-2 border-t border-slate-100">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-600">Projected Payoff</span>
-              <span className="text-sm font-semibold text-blue-700">
+              <span className="text-xs text-slate-600">Projected Payoff</span>
+              <span className="text-xs font-semibold text-blue-700">
                 {format(payoffDate, "MMM d, yyyy")}
               </span>
             </div>
@@ -104,7 +105,7 @@ export default function DebtCard({ debt, onClick, onEdit, onQuickPay, onQuickAdd
       </CardContent>
 
       {/* Action Buttons - Bottom Right */}
-      <div className="absolute bottom-3 right-3 flex gap-1 z-10">
+      <div className="absolute bottom-2 right-2 flex gap-1 z-10">
         <Button
           variant="ghost"
           size="icon"
@@ -112,10 +113,10 @@ export default function DebtCard({ debt, onClick, onEdit, onQuickPay, onQuickAdd
             e.stopPropagation();
             onDelete?.(debt);
           }}
-          className="h-8 w-8 bg-red-100 hover:bg-red-200 text-red-700 shadow-md"
+          className="h-7 w-7 bg-red-100 hover:bg-red-200 text-red-700 shadow-md"
           title="Delete Debt"
         >
-          <X className="w-4 h-4" />
+          <X className="w-3 h-3" />
         </Button>
         <Button
           variant="ghost"
@@ -124,10 +125,10 @@ export default function DebtCard({ debt, onClick, onEdit, onQuickPay, onQuickAdd
             e.stopPropagation();
             onQuickAdd?.(debt);
           }}
-          className="h-8 w-8 bg-blue-100 hover:bg-blue-200 text-blue-700 shadow-md"
+          className="h-7 w-7 bg-blue-100 hover:bg-blue-200 text-blue-700 shadow-md"
           title="Add to Balance"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-3 h-3" />
         </Button>
         <Button
           variant="ghost"
@@ -136,10 +137,10 @@ export default function DebtCard({ debt, onClick, onEdit, onQuickPay, onQuickAdd
             e.stopPropagation();
             onQuickPay?.(debt);
           }}
-          className="h-8 w-8 bg-green-100 hover:bg-green-200 text-green-700 shadow-md"
+          className="h-7 w-7 bg-green-100 hover:bg-green-200 text-green-700 shadow-md"
           title="Quick Payment"
         >
-          <Minus className="w-4 h-4" />
+          <Minus className="w-3 h-3" />
         </Button>
         <Button
           variant="ghost"
@@ -148,10 +149,10 @@ export default function DebtCard({ debt, onClick, onEdit, onQuickPay, onQuickAdd
             e.stopPropagation();
             onEdit?.(debt);
           }}
-          className="h-8 w-8 bg-slate-100 hover:bg-slate-200 text-slate-700 shadow-md"
+          className="h-7 w-7 bg-slate-100 hover:bg-slate-200 text-slate-700 shadow-md"
           title="View Details"
         >
-          <Edit className="w-4 h-4" />
+          <Edit className="w-3 h-3" />
         </Button>
       </div>
     </Card>
