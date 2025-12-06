@@ -9,6 +9,7 @@ import Statistics from './pages/Statistics';
 import PaymentHistory from './pages/PaymentHistory';
 import Goals from './pages/Goals';
 import Calendar from './pages/Calendar';
+import LandingPage from './pages/LandingPage';
 import __Layout from './Layout.jsx';
 
 
@@ -24,6 +25,7 @@ export const PAGES = {
     "PaymentHistory": PaymentHistory,
     "Goals": Goals,
     "Calendar": Calendar,
+    "LandingPage": LandingPage,
 }
 
 export const pagesConfig = {
