@@ -40,10 +40,16 @@ export default function EditableStatCard({
 
   return (
     <Card className={cn(
-      "relative overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-300",
-      bgGradient,
+      "relative overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-md",
       editable && !isEditing && "cursor-pointer group"
     )}
+    style={{ 
+      backgroundColor: 'rgba(185, 223, 245, 0.75)',
+      border: '2px solid transparent',
+      backgroundImage: 'linear-gradient(rgba(185, 223, 245, 0.75), rgba(185, 223, 245, 0.75)), linear-gradient(135deg, #CDE7CF, #B9DFF5, #A2B7C8)',
+      backgroundOrigin: 'border-box',
+      backgroundClip: 'padding-box, border-box'
+    }}
     onClick={editable && !isEditing ? handleEdit : undefined}
     >
       <div className="absolute top-0 right-0 w-32 h-32 transform translate-x-8 -translate-y-8 bg-white/10 rounded-full" />
