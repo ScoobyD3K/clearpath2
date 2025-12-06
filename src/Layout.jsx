@@ -131,7 +131,7 @@ export default function Layout({ children, currentPageName }) {
                 <DollarSign className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="font-bold text-slate-900 text-lg">DebtFree</h2>
+                <h2 className="font-bold text-slate-900 text-lg">ClearPath</h2>
                 <p className="text-xs text-slate-500">Financial Freedom Tracker</p>
               </div>
             </div>
@@ -181,7 +181,7 @@ export default function Layout({ children, currentPageName }) {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <SidebarTrigger className="hover:bg-slate-100 p-2 rounded-lg transition-colors md:hidden" />
-                <h1 className="text-xl font-bold text-slate-900 md:hidden">DebtFree</h1>
+                <h1 className="text-xl font-bold text-slate-900 md:hidden">ClearPath</h1>
               </div>
               <div className="ml-auto flex items-center gap-4">
                 <NotificationBell />

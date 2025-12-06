@@ -68,7 +68,7 @@ export default function LandingPage() {
             </div>
           </div>
           <h1 className="text-4xl md:text-6xl font-bold text-slate-900 mb-4">
-            Welcome to <span className="text-cyan-600">DebtFree</span>
+            Welcome to <span className="text-cyan-600">ClearPath</span>
           </h1>
           <p className="text-lg md:text-xl text-slate-700 mb-8 max-w-2xl mx-auto">
             Your personal companion on the journey to financial freedom. Track debts, set goals, and watch your progress grow.
