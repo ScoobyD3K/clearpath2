@@ -4,7 +4,13 @@ import { TrendingUp, TrendingDown } from "lucide-react";
 
 export default function StatCard({ title, value, icon: Icon, trend, bgGradient, iconColor }) {
   return (
-    <Card className="border-slate-200 shadow-md hover:shadow-lg transition-shadow overflow-hidden">
+    <Card className="shadow-md hover:shadow-lg transition-shadow overflow-hidden backdrop-blur-md" style={{ 
+      backgroundColor: 'rgba(255, 255, 255, 0.75)',
+      border: '2px solid transparent',
+      backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #CDE7CF, #B9DFF5, #A2B7C8)',
+      backgroundOrigin: 'border-box',
+      backgroundClip: 'padding-box, border-box'
+    }}>
       <CardContent className="p-3">
         <div className="flex items-center justify-between mb-2">
           <div className={`w-8 h-8 ${bgGradient} rounded-lg flex items-center justify-center`}>

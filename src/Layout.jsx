@@ -109,18 +109,14 @@ export default function Layout({ children, currentPageName }) {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full relative">
-        {/* Beach Background */}
+        {/* Glassmorphism Background */}
         <div 
           className="fixed inset-0 z-0"
           style={{
-            backgroundImage: 'url(https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            background: 'linear-gradient(135deg, #CDE7CF, #B9DFF5, #A2B7C8)',
             backgroundAttachment: 'fixed'
           }}
-        >
-          <div className="absolute inset-0 bg-white/70 backdrop-blur-sm" />
-        </div>
+        />
 
         <Sidebar className="border-r border-slate-200 bg-white/95 backdrop-blur-md relative z-10">
           <SidebarHeader className="border-b border-slate-200 p-6">

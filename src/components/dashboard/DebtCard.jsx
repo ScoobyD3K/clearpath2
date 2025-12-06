@@ -31,7 +31,14 @@ export default function DebtCard({ debt, onClick, onEdit, onQuickPay, onQuickAdd
 
   return (
     <Card 
-      className="hover:shadow-lg transition-all duration-300 border-slate-200 bg-white relative"
+      className="hover:shadow-lg transition-all duration-300 bg-white relative backdrop-blur-md"
+      style={{ 
+        backgroundColor: 'rgba(255, 255, 255, 0.75)',
+        border: '2px solid transparent',
+        backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #CDE7CF, #B9DFF5, #A2B7C8)',
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box'
+      }}
     >
       <CardHeader className="pb-2 cursor-pointer" onClick={onClick}>
         <div className="flex justify-between items-start">

@@ -9,7 +9,7 @@ import Statistics from './pages/Statistics';
 import PaymentHistory from './pages/PaymentHistory';
 import Goals from './pages/Goals';
 import Calendar from './pages/Calendar';
-import Layout from './Layout.jsx';
+import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
@@ -29,5 +29,5 @@ export const PAGES = {
 export const pagesConfig = {
     mainPage: "Dashboard",
     Pages: PAGES,
-    Layout: Layout,
+    Layout: __Layout,
 };
