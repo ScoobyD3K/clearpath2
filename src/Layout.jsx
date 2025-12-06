@@ -118,7 +118,13 @@ export default function Layout({ children, currentPageName }) {
           }}
         />
 
-        <Sidebar className="border-r border-slate-200 bg-white/95 backdrop-blur-md relative z-10">
+        <Sidebar className="backdrop-blur-md relative z-10" style={{
+        backgroundColor: 'rgba(255, 255, 255, 0.75)',
+        border: '2px solid transparent',
+        backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #CDE7CF, #B9DFF5, #A2B7C8)',
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box'
+      }}>
           <SidebarHeader className="border-b border-slate-200 p-6">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
@@ -164,7 +170,13 @@ export default function Layout({ children, currentPageName }) {
         </Sidebar>
 
         <main className="flex-1 flex flex-col relative z-10">
-          <header className="bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 py-4 sticky top-0 z-20 shadow-sm">
+          <header className="backdrop-blur-md px-6 py-4 sticky top-0 z-20 shadow-sm" style={{
+          backgroundColor: 'rgba(255, 255, 255, 0.75)',
+          border: '2px solid transparent',
+          backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #CDE7CF, #B9DFF5, #A2B7C8)',
+          backgroundOrigin: 'border-box',
+          backgroundClip: 'padding-box, border-box'
+        }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <SidebarTrigger className="hover:bg-slate-100 p-2 rounded-lg transition-colors md:hidden" />
