@@ -127,9 +127,11 @@ export default function Layout({ children, currentPageName }) {
       }}>
           <SidebarHeader className="border-b border-slate-200 p-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                <DollarSign className="w-6 h-6 text-white" />
-              </div>
+              <img 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690d776f0c69285b7e4d7511/ed1fa06f0_Screenshot2025-11-16at112652PM.png"
+                alt="ClearPath Logo"
+                className="w-10 h-10 rounded-xl shadow-lg object-cover"
+              />
               <div>
                 <h2 className="font-bold text-slate-900 text-lg">ClearPath</h2>
                 <p className="text-xs text-slate-500">Financial Freedom Tracker</p>
