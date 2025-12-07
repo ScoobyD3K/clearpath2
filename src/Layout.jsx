@@ -126,7 +126,7 @@ export default function Layout({ children, currentPageName }) {
         backgroundClip: 'padding-box, border-box'
       }}>
           <SidebarHeader className="border-b border-slate-200 p-6">
-            <div className="flex items-center gap-3">
+            <Link to={createPageUrl("LandingPage")} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <img 
                 src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690d776f0c69285b7e4d7511/ed1fa06f0_Screenshot2025-11-16at112652PM.png"
                 alt="ClearPath Logo"
@@ -136,7 +136,7 @@ export default function Layout({ children, currentPageName }) {
                 <h2 className="font-bold text-slate-900 text-lg">ClearPath</h2>
                 <p className="text-xs text-slate-500">Financial Freedom Tracker</p>
               </div>
-            </div>
+            </Link>
           </SidebarHeader>
           
           <SidebarContent className="p-3">
