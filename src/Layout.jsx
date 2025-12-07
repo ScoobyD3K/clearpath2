@@ -130,7 +130,7 @@ export default function Layout({ children, currentPageName }) {
               <img 
                 src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690d776f0c69285b7e4d7511/4d9b15c56_clearpath_w.png"
                 alt="ClearPath Logo"
-                className="w-10 h-10 rounded-xl shadow-lg object-cover"
+                className="w-10 h-10 rounded-xl object-cover"
               />
               <div>
                 <h2 className="font-bold text-slate-900 text-lg">ClearPath</h2>
