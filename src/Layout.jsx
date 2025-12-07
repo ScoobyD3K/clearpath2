@@ -128,7 +128,7 @@ export default function Layout({ children, currentPageName }) {
           <SidebarHeader className="border-b border-slate-200 p-6">
             <Link to={createPageUrl("LandingPage")} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690d776f0c69285b7e4d7511/ed1fa06f0_Screenshot2025-11-16at112652PM.png"
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690d776f0c69285b7e4d7511/4d9b15c56_clearpath_w.png"
                 alt="ClearPath Logo"
                 className="w-10 h-10 rounded-xl shadow-lg object-cover"
               />
