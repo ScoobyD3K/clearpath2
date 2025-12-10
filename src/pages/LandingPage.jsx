@@ -63,9 +63,11 @@ export default function LandingPage() {
       <div className="container mx-auto px-4 py-16 md:py-24">
         <div className="text-center mb-16">
           <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <DollarSign className="w-10 h-10 text-white" />
-            </div>
+            <img 
+              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690d776f0c69285b7e4d7511/4d9b15c56_clearpath_w.png"
+              alt="ClearPath Logo"
+              className="w-16 h-16 rounded-2xl object-cover"
+            />
           </div>
           <h1 className="text-4xl md:text-6xl font-bold text-slate-900 mb-4">
             Welcome to <span className="text-cyan-600">ClearPath</span>
