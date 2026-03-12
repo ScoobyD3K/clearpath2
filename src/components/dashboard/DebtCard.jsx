@@ -105,9 +105,13 @@ export default function DebtCard({ debt, onClick, onEdit, onQuickPay, onQuickAdd
           <div className="pt-2 border-t border-slate-100">
             <div className="flex items-center justify-between">
               <span className="text-xs text-slate-600">Projected Payoff</span>
-              <span className="text-xs font-semibold text-blue-700">
+              <Link
+                to={createPageUrl("Calendar")}
+                onClick={(e) => e.stopPropagation()}
+                className="text-xs font-semibold text-blue-700 hover:text-blue-900 underline underline-offset-2 hover:underline"
+              >
                 {format(payoffDate, "MMM d, yyyy")}
-              </span>
+              </Link>
             </div>
           </div>
         )}
