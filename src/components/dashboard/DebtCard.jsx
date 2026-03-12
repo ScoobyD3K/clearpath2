@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Percent, DollarSign, TrendingDown, Edit, Plus, Minus, X } from "lucide-react";
 import { format, addMonths } from "date-fns";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 
 export default function DebtCard({ debt, onClick, onEdit, onQuickPay, onQuickAdd, onDelete }) {
   const calculatePayoffDate = () => {
