@@ -58,7 +58,7 @@ export default function CreditUtilization() {
         ) : (
           <>
             {/* Overall summary */}
-            {activeCards.length > 0 && (
+            {allCards.length > 0 && (
               <Card className="border-slate-200 shadow-sm mb-6">
                 <CardContent className="p-5">
                   <div className="flex items-center justify-between mb-2">
