@@ -257,5 +257,13 @@ export default function BankAccountsModal({ open, onOpenChange }) {
         )}
       </DialogContent>
     </Dialog>
+
+    <QuickBalanceModal
+      open={!!quickBalanceAccount}
+      onOpenChange={(open) => !open && setQuickBalanceAccount(null)}
+      account={quickBalanceAccount}
+      type={quickBalanceType}
+      onSubmit={handleQuickBalance}
+    />
   );
 }
