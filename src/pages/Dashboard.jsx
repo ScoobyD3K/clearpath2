@@ -264,10 +264,10 @@ export default function Dashboard() {
             bgGradient="bg-gradient-to-br from-rose-500 to-pink-600"
             iconColor="text-rose-600"
           />
-          <div onClick={() => setShowSavingsAdjustment(true)} className="cursor-pointer">
+          <div onClick={() => setShowBankAccounts(true)} className="cursor-pointer">
             <EditableStatCard
               title="Savings"
-              value={user?.monthly_income ? `$${user.monthly_income.toLocaleString()}` : "$0"}
+              value={`$${totalSavings.toLocaleString()}`}
               icon={DollarSign}
               bgGradient="bg-gradient-to-br from-green-500 to-emerald-600"
               iconColor="text-green-600"
