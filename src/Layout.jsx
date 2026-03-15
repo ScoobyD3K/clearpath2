@@ -186,6 +186,11 @@ export default function Layout({ children, currentPageName }) {
                 <h1 className="text-xl font-bold text-slate-900 md:hidden">ClearPath</h1>
               </div>
               <div className="ml-auto flex items-center gap-4">
+                <Link to={createPageUrl("Dashboard")} title="Dashboard">
+                  <Button variant="outline" size="icon" className="h-9 w-9">
+                    <Home className="w-4 h-4" />
+                  </Button>
+                </Link>
                 <NotificationBell />
                 {user && (
                   <Link to={createPageUrl("Profile")}>
