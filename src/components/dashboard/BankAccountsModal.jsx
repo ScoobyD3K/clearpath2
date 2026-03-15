@@ -148,16 +148,11 @@ export default function BankAccountsModal({ open, onOpenChange }) {
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-400 hover:text-blue-600" onClick={() => startEdit(account)}>
-                          <Pencil className="w-3.5 h-3.5" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-400 hover:text-red-600" onClick={() => {
-                          if (confirm(`Remove "${account.name}"?`)) deleteMutation.mutate(account.id);
-                        }}>
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </Button>
-                      </div>
+                      <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-400 hover:text-red-600" onClick={() => {
+                        if (confirm(`Remove "${account.name}"?`)) deleteMutation.mutate(account.id);
+                      }}>
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </Button>
                     </div>
 
                     <div className="flex items-end justify-between mb-2">
