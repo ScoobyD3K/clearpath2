@@ -385,6 +385,23 @@ export default function DebtDetail() {
                       onChange={(e) => setEditData(prev => ({ ...prev, due_date: e.target.value }))}
                     />
                   </div>
+
+                  <div>
+                    <Label htmlFor="edit_credit_limit">Credit Limit (optional)</Label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+                      <Input
+                        id="edit_credit_limit"
+                        type="number"
+                        step="0.01"
+                        value={editData?.credit_limit || ""}
+                        onChange={(e) => setEditData(prev => ({ ...prev, credit_limit: e.target.value }))}
+                        className="pl-8"
+                        placeholder="e.g., 10000"
+                      />
+                    </div>
+                    <p className="text-xs text-slate-500 mt-1">For credit cards — used to calculate credit utilization</p>
+                  </div>
                 </div>
 
                 <div className="flex justify-end gap-3 pt-4">
