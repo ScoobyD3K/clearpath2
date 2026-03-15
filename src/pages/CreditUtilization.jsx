@@ -17,8 +17,9 @@ export default function CreditUtilization() {
   const activeCards = debts.filter(d => d.credit_limit && d.status === 'active');
   const paidOffCards = debts.filter(d => d.credit_limit && d.status === 'paid_off');
 
-  const totalLimit = activeCards.reduce((s, d) => s + d.credit_limit, 0);
-  const totalBalance = activeCards.reduce((s, d) => s + d.current_balance, 0);
+  const allCards = debts.filter(d => d.credit_limit);
+  const totalLimit = allCards.reduce((s, d) => s + d.credit_limit, 0);
+  const totalBalance = allCards.reduce((s, d) => s + d.current_balance, 0);
   const overallUtilization = totalLimit > 0 ? (totalBalance / totalLimit) * 100 : 0;
 
   const utilizationColor = (pct) => {
