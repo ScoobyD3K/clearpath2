@@ -101,6 +101,25 @@ export default function DebtCard({ debt, onClick, onEdit, onQuickPay, onQuickAdd
           </div>
         </div>
 
+        {debt.credit_limit > 0 && (
+          <div className="pt-2 border-t border-slate-100">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-slate-600">Credit Utilization</span>
+              <span className={cn(
+                "text-xs font-semibold",
+                (debt.current_balance / debt.credit_limit) > 0.7 ? "text-red-600" :
+                (debt.current_balance / debt.credit_limit) > 0.3 ? "text-amber-600" : "text-green-600"
+              )}>
+                {((debt.current_balance / debt.credit_limit) * 100).toFixed(1)}% of ${debt.credit_limit.toLocaleString()}
+              </span>
+            </div>
+            <Progress 
+              value={(debt.current_balance / debt.credit_limit) * 100} 
+              className="h-1.5"
+            />
+          </div>
+        )}
+
         {payoffDate && (
           <div className="pt-2 border-t border-slate-100">
             <div className="flex items-center justify-between">
