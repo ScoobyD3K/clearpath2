@@ -13,6 +13,7 @@ import NavigationEditor from "../components/dashboard/NavigationEditor";
 import CelebrationModal from "../components/debt/CelebrationModal";
 import QuickPaymentModal from "../components/debt/QuickPaymentModal";
 import SavingsAdjustmentModal from "../components/dashboard/SavingsAdjustmentModal";
+import BankAccountsModal from "../components/dashboard/BankAccountsModal";
 import { format } from "date-fns";
 import { toast } from "sonner";
 
