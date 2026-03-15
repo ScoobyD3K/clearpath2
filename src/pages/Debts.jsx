@@ -39,6 +39,9 @@ export default function Debts() {
     initialData: [],
   });
 
+  const activeDebts = debts.filter(d => d.status !== 'paid_off');
+  const paidOffDebts = debts.filter(d => d.status === 'paid_off');
+
   const createDebtMutation = useMutation({
     mutationFn: (data) => base44.entities.Debt.create(data),
     onSuccess: () => {
