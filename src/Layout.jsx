@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { LayoutDashboard, CreditCard, TrendingUp, DollarSign, Bell, BarChart3, Target, Calendar } from "lucide-react";
+import { LayoutDashboard, CreditCard, TrendingUp, DollarSign, Bell, BarChart3, Target, Calendar, Home } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
