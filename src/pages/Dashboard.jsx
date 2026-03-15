@@ -19,7 +19,6 @@ import { toast } from "sonner";
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [showStrategySelector, setShowStrategySelector] = useState(false);
-  const [editingDebt, setEditingDebt] = useState(null);
   const [showNavEditor, setShowNavEditor] = useState(false);
   const [quickPaymentDebt, setQuickPaymentDebt] = useState(null);
   const [quickPaymentType, setQuickPaymentType] = useState("pay");
