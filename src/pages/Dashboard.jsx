@@ -282,13 +282,15 @@ export default function Dashboard() {
               : "bg-gradient-to-br from-slate-500 to-slate-700"}
             iconColor={netPosition >= 0 ? "text-purple-600" : "text-slate-600"}
           />
-          <StatCard
-            title="Min Payments"
-            value={`$${totalMinPayments.toLocaleString()}`}
-            icon={Target}
-            bgGradient="bg-gradient-to-br from-amber-500 to-orange-600"
-            iconColor="text-amber-600"
-          />
+          <Link to={createPageUrl("MinimumPayments")} className="block">
+            <StatCard
+              title="Min Payments"
+              value={`$${totalMinPayments.toLocaleString()}`}
+              icon={Target}
+              bgGradient="bg-gradient-to-br from-amber-500 to-orange-600"
+              iconColor="text-amber-600"
+            />
+          </Link>
           {creditUtilization !== null && (
             <StatCard
               title="Credit Utilization"
