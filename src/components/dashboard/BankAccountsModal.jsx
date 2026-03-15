@@ -164,11 +164,42 @@ export default function BankAccountsModal({ open, onOpenChange }) {
                     </div>
 
                     {/* Progress bar */}
-                    <div className="w-full bg-slate-100 rounded-full h-1.5">
+                    <div className="w-full bg-slate-100 rounded-full h-1.5 mb-3">
                       <div
                         className="bg-gradient-to-r from-emerald-400 to-green-500 h-1.5 rounded-full transition-all"
                         style={{ width: `${Math.min(pct, 100)}%` }}
                       />
+                    </div>
+
+                    {/* Action buttons */}
+                    <div className="flex gap-1.5 pt-1 border-t border-slate-100">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex-1 h-7 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 shadow-sm"
+                        onClick={() => startEdit(account)}
+                        title="Edit Account"
+                      >
+                        <Pencil className="w-3 h-3 mr-1" /> Edit
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex-1 h-7 text-xs bg-green-100 hover:bg-green-200 text-green-700 shadow-sm"
+                        onClick={() => { setQuickBalanceAccount(account); setQuickBalanceType("add"); }}
+                        title="Add to Balance"
+                      >
+                        <Plus className="w-3 h-3 mr-1" /> Add
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex-1 h-7 text-xs bg-red-100 hover:bg-red-200 text-red-700 shadow-sm"
+                        onClick={() => { setQuickBalanceAccount(account); setQuickBalanceType("subtract"); }}
+                        title="Subtract from Balance"
+                      >
+                        <Minus className="w-3 h-3 mr-1" /> Subtract
+                      </Button>
                     </div>
                   </div>
                 </div>
