@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Plus, Trash2, DollarSign, Calendar, Edit, X, Save } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, DollarSign, Calendar, Edit, X, Save, Home } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { format, addMonths } from "date-fns";
