@@ -16,6 +16,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import NotificationBell from "./components/layout/NotificationBell";
+import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
 
 const defaultNavigationItems = [
