@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Plus, TrendingUp, DollarSign, CreditCard, Target, Zap, Settings } from "lucide-react";
+import { Plus, TrendingUp, DollarSign, CreditCard, Target, Zap, Settings, BarChart2 } from "lucide-react";
 import StatCard from "../components/dashboard/StatCard";
 import EditableStatCard from "../components/dashboard/EditableStatCard";
 import DebtCard from "../components/dashboard/DebtCard";
