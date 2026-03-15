@@ -309,69 +309,7 @@ export default function Dashboard() {
           )}
         </div>
 
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <h2 className="text-xl font-bold text-slate-900">Active Debts</h2>
-              {user?.payoff_strategy && debts.length > 0 && (
-                <p className="text-xs text-slate-600 mt-1">
-                  Sorted by {user.payoff_strategy === "avalanche" ? "highest interest rate" : "smallest balance"} 
-                  <span className="ml-1 text-blue-600 font-medium">
-                    ({user.payoff_strategy === "avalanche" ? "Avalanche" : "Snowball"} Method)
-                  </span>
-                </p>
-              )}
-            </div>
-          </div>
-          
-          {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="h-56 bg-slate-100 rounded-lg animate-pulse" />
-              ))}
-            </div>
-          ) : debts.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-2xl border-2 border-dashed border-slate-200">
-              <CreditCard className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">No debts yet</h3>
-              <p className="text-sm text-slate-600 mb-4">Start tracking your debts to see your progress</p>
-              <Link to={createPageUrl("Debts")}>
-                <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 h-9 text-sm">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Your First Debt
-                </Button>
-              </Link>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {sortedDebts.map((debt, index) => (
-                <div key={debt.id} className="relative">
-                  {index === 0 && user?.payoff_strategy && (
-                    <div className="absolute -top-2 left-4 z-10">
-                      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-                        🎯 Focus Here First
-                      </div>
-                    </div>
-                  )}
-                  <DebtCard
-                    debt={debt}
-                    onClick={() => window.location.href = createPageUrl("DebtDetail") + `?id=${debt.id}`}
-                    onEdit={(debt) => window.location.href = createPageUrl("DebtDetail") + `?id=${debt.id}`}
-                    onQuickPay={(debt) => {
-                      setQuickPaymentDebt(debt);
-                      setQuickPaymentType("pay");
-                    }}
-                    onQuickAdd={(debt) => {
-                      setQuickPaymentDebt(debt);
-                      setQuickPaymentType("add");
-                    }}
-                    onDelete={handleDeleteDebt}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+
       </div>
 
       <NavigationEditor
