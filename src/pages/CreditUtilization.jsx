@@ -38,18 +38,11 @@ export default function CreditUtilization() {
     <div className="p-4 md:p-8 min-h-screen">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
-          <div className="flex flex-col gap-1">
-            <Link to={createPageUrl("Dashboard")}>
-              <Button variant="outline" size="icon" className="h-7 w-7" title="Dashboard">
-                <Home className="w-3 h-3" />
-              </Button>
-            </Link>
-            <Link to={createPageUrl("Dashboard")}>
-              <Button variant="outline" size="icon">
-                <ArrowLeft className="w-4 h-4" />
-              </Button>
-            </Link>
-          </div>
+          <Link to={createPageUrl("Dashboard")}>
+            <Button variant="outline" size="icon" title="Back to Dashboard">
+              <ArrowLeft className="w-4 h-4" />
+            </Button>
+          </Link>
           <div>
             <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Credit Utilization</h1>
             <p className="text-sm text-slate-600 mt-1">Credit card balances vs. limits</p>
