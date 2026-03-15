@@ -199,11 +199,13 @@ export default function Profile() {
 
               <div className="border-t border-slate-200 pt-6 space-y-4">
                 <div>
-                  <Label className="text-slate-700">Full Name</Label>
-                  <Input 
-                    value={user.full_name} 
-                    disabled 
-                    className="mt-1 bg-slate-50"
+                  <Label htmlFor="fullName" className="text-slate-700">Full Name</Label>
+                  <Input
+                    id="fullName"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className="mt-1"
+                    placeholder="Your full name"
                   />
                 </div>
                 <div>
@@ -213,7 +215,24 @@ export default function Profile() {
                     disabled 
                     className="mt-1 bg-slate-50"
                   />
+                  <p className="text-xs text-slate-400 mt-1">Email cannot be changed</p>
                 </div>
+                <Button
+                  type="button"
+                  onClick={async () => {
+                    setIsSaving(true);
+                    await base44.auth.updateMe({ full_name: fullName });
+                    const updatedUser = await base44.auth.me();
+                    setUser(updatedUser);
+                    setIsSaving(false);
+                    toast.success("Name updated!");
+                  }}
+                  disabled={isSaving}
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Name
+                </Button>
               </div>
             </CardContent>
           </Card>
