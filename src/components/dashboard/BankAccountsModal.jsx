@@ -265,5 +265,6 @@ export default function BankAccountsModal({ open, onOpenChange }) {
       type={quickBalanceType}
       onSubmit={handleQuickBalance}
     />
+    </>
   );
 }
