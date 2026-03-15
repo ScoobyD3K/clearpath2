@@ -171,11 +171,18 @@ export default function Debts() {
     <div className="p-4 md:p-8 min-h-screen">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
-          <Link to={createPageUrl("Dashboard")}>
-            <Button variant="outline" size="icon">
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
-          </Link>
+          <div className="flex flex-col gap-1">
+            <Link to={createPageUrl("Dashboard")}>
+              <Button variant="outline" size="icon" className="h-7 w-7" title="Dashboard">
+                <Home className="w-3 h-3" />
+              </Button>
+            </Link>
+            <Link to={createPageUrl("Dashboard")}>
+              <Button variant="outline" size="icon">
+                <ArrowLeft className="w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
           <div className="flex-1">
             <h1 className="text-3xl md:text-4xl font-bold text-slate-900">My Debts</h1>
             <p className="text-slate-600 mt-1">Manage and track all your debts</p>
