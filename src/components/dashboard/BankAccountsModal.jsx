@@ -26,6 +26,8 @@ export default function BankAccountsModal({ open, onOpenChange }) {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(emptyForm);
+  const [quickBalanceAccount, setQuickBalanceAccount] = useState(null);
+  const [quickBalanceType, setQuickBalanceType] = useState("add");
 
   const { data: accounts = [] } = useQuery({
     queryKey: ['bankAccounts'],
