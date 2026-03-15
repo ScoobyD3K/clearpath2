@@ -283,6 +283,7 @@ export default function DebtDetail() {
                       interest_rate: debt.interest_rate,
                       minimum_payment: debt.minimum_payment || "",
                       due_date: debt.due_date || "",
+                      credit_limit: debt.credit_limit || "",
                     });
                   }}
                 >
