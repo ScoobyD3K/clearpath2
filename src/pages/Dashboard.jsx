@@ -281,6 +281,22 @@ export default function Dashboard() {
             bgGradient="bg-gradient-to-br from-amber-500 to-orange-600"
             iconColor="text-amber-600"
           />
+          {creditUtilization !== null && (
+            <StatCard
+              title="Credit Utilization"
+              value={`${creditUtilization.toFixed(1)}%`}
+              icon={BarChart2}
+              bgGradient={
+                creditUtilization > 70 ? "bg-gradient-to-br from-red-500 to-rose-600" :
+                creditUtilization > 30 ? "bg-gradient-to-br from-amber-500 to-orange-500" :
+                "bg-gradient-to-br from-teal-500 to-cyan-600"
+              }
+              iconColor={
+                creditUtilization > 70 ? "text-red-600" :
+                creditUtilization > 30 ? "text-amber-600" : "text-teal-600"
+              }
+            />
+          )}
         </div>
 
         <div className="mb-6">
