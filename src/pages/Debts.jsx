@@ -145,6 +145,7 @@ export default function Debts() {
       interest_rate: parseFloat(formData.interest_rate),
       minimum_payment: formData.minimum_payment ? parseFloat(formData.minimum_payment) : null,
       due_date: formData.due_date ? parseInt(formData.due_date) : null,
+      credit_limit: formData.credit_limit ? parseFloat(formData.credit_limit) : null,
       status: "active",
     });
   };
