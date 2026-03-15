@@ -119,6 +119,7 @@ export default function Debts() {
       interest_rate: "",
       minimum_payment: "",
       due_date: "",
+      credit_limit: "",
     });
   };
 
