@@ -27,6 +27,7 @@ export default function Dashboard() {
   const [showCelebration, setShowCelebration] = useState(false);
   const [paidOffDebtInfo, setPaidOffDebtInfo] = useState(null);
   const [showSavingsAdjustment, setShowSavingsAdjustment] = useState(false);
+  const [showBankAccounts, setShowBankAccounts] = useState(false);
   const queryClient = useQueryClient();
 
   useEffect(() => {
