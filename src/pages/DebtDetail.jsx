@@ -184,6 +184,7 @@ export default function DebtDetail() {
       interest_rate: parseFloat(editData.interest_rate),
       minimum_payment: editData.minimum_payment ? parseFloat(editData.minimum_payment) : null,
       due_date: editData.due_date ? parseInt(editData.due_date) : null,
+      credit_limit: editData.credit_limit ? parseFloat(editData.credit_limit) : null,
     });
   };
 
