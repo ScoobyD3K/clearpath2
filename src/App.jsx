@@ -52,6 +52,7 @@ const AuthenticatedApp = () => {
           <Route key={path} path={`/${path}`} element={<Page />} />
         ))}
         <Route path="/MinimumPayments" element={<LayoutWrapper currentPageName="MinimumPayments"><MinimumPayments /></LayoutWrapper>} />
+        <Route path="/CreditUtilization" element={<LayoutWrapper currentPageName="CreditUtilization"><CreditUtilization /></LayoutWrapper>} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </LayoutWrapper>
