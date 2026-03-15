@@ -191,6 +191,9 @@ export default function Dashboard() {
   const totalDebt = debts.reduce((sum, debt) => sum + debt.current_balance, 0);
   const totalMinPayments = debts.reduce((sum, debt) => sum + (debt.minimum_payment || 0), 0);
   const netPosition = (user?.monthly_income || 0) - totalDebt;
+  const totalCreditLimit = debts.reduce((sum, debt) => sum + (debt.credit_limit || 0), 0);
+  const totalCreditBalance = debts.reduce((sum, debt) => sum + (debt.credit_limit ? debt.current_balance : 0), 0);
+  const creditUtilization = totalCreditLimit > 0 ? (totalCreditBalance / totalCreditLimit) * 100 : null;
 
   return (
     <div className="p-3 md:p-6 min-h-screen" style={{ background: 'linear-gradient(135deg, #CDE7CF, #B9DFF5, #A2B7C8)' }}>
