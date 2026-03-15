@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Trash2, Pencil, X, Check, Landmark } from "lucide-react";
+import { Plus, Trash2, Pencil, X, Check, Landmark, Minus, Eye } from "lucide-react";
 import { toast } from "sonner";
+import QuickBalanceModal from "./QuickBalanceModal";
 
 const ACCOUNT_TYPE_LABELS = {
   checking: "Checking",
