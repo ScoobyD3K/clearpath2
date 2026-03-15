@@ -11,6 +11,7 @@ import { toast } from "sonner";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
+  const [fullName, setFullName] = useState("");
   const [monthlyIncome, setMonthlyIncome] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
