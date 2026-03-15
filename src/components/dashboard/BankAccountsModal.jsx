@@ -65,6 +65,20 @@ export default function BankAccountsModal({ open, onOpenChange }) {
     },
   });
 
+  const adjustBalanceMutation = useMutation({
+    mutationFn: ({ id, balance }) => base44.entities.BankAccount.update(id, { balance }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['bankAccounts'] });
+      toast.success("Balance updated!");
+    },
+  });
+
+  const handleQuickBalance = (amount, type) => {
+    const current = quickBalanceAccount?.balance || 0;
+    const newBalance = type === "subtract" ? Math.max(0, current - amount) : current + amount;
+    adjustBalanceMutation.mutate({ id: quickBalanceAccount.id, balance: newBalance });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = { ...form, balance: parseFloat(form.balance) || 0 };
