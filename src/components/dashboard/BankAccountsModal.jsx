@@ -110,29 +110,58 @@ export default function BankAccountsModal({ open, onOpenChange }) {
 
         {/* Account list */}
         {accounts.length > 0 && (
-          <div className="space-y-2 mb-2">
-            {accounts.map((account) => (
-              <div key={account.id} className="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-lg px-4 py-3">
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-slate-800 truncate">{account.name}</p>
-                  <p className="text-xs text-slate-500">
-                    {account.institution && `${account.institution} · `}
-                    {ACCOUNT_TYPE_LABELS[account.account_type] || account.account_type}
-                  </p>
+          <div className="grid grid-cols-1 gap-3 mb-2">
+            {accounts.map((account) => {
+              const pct = totalSavings > 0 ? ((account.balance || 0) / totalSavings) * 100 : 0;
+              return (
+                <div key={account.id} className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+                  {/* Card top bar */}
+                  <div className="h-1.5 w-full bg-gradient-to-r from-emerald-400 to-green-500 rounded-t-xl" />
+                  <div className="p-4">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center shadow-sm">
+                          <Landmark className="w-4 h-4 text-white" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-slate-900 leading-tight">{account.name}</p>
+                          <p className="text-xs text-slate-500 mt-0.5">
+                            {account.institution && `${account.institution} · `}
+                            {ACCOUNT_TYPE_LABELS[account.account_type] || account.account_type}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-400 hover:text-blue-600" onClick={() => startEdit(account)}>
+                          <Pencil className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-400 hover:text-red-600" onClick={() => {
+                          if (confirm(`Remove "${account.name}"?`)) deleteMutation.mutate(account.id);
+                        }}>
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="flex items-end justify-between mb-2">
+                      <div>
+                        <p className="text-xs text-slate-500">Balance</p>
+                        <p className="text-2xl font-bold text-slate-900">${(account.balance || 0).toLocaleString()}</p>
+                      </div>
+                      <p className="text-sm text-slate-500 font-medium">{pct.toFixed(1)}% of total</p>
+                    </div>
+
+                    {/* Progress bar */}
+                    <div className="w-full bg-slate-100 rounded-full h-1.5">
+                      <div
+                        className="bg-gradient-to-r from-emerald-400 to-green-500 h-1.5 rounded-full transition-all"
+                        style={{ width: `${Math.min(pct, 100)}%` }}
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3 ml-3">
-                  <span className="font-bold text-slate-900">${(account.balance || 0).toLocaleString()}</span>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-400 hover:text-blue-600" onClick={() => startEdit(account)}>
-                    <Pencil className="w-3.5 h-3.5" />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-400 hover:text-red-600" onClick={() => {
-                    if (confirm(`Remove "${account.name}"?`)) deleteMutation.mutate(account.id);
-                  }}>
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </Button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
