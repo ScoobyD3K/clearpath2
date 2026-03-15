@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -24,6 +23,7 @@ export default function Debts() {
     interest_rate: "",
     minimum_payment: "",
     due_date: "",
+    credit_limit: "",
   });
 
   const [quickPaymentDebt, setQuickPaymentDebt] = useState(null);
