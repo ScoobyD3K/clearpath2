@@ -231,15 +231,13 @@ export default function Dashboard() {
               <Settings className="w-4 h-4" />
             </Button>
             <Link to={createPageUrl("Strategy")}>
-              <Button variant="outline" className="gap-2 h-9 text-sm px-3">
+              <Button variant="outline" className="gap-2 h-9 w-9 px-0" title="Strategy">
                 <Zap className="w-4 h-4" />
-                Strategy
               </Button>
             </Link>
             <Link to={createPageUrl("Debts")}>
-              <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg h-9 text-sm px-3">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Debt
+              <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg h-9 w-9 px-0" title="Add Debt">
+                <Plus className="w-4 h-4" />
               </Button>
             </Link>
           </div>
