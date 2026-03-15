@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -56,6 +55,7 @@ export default function DebtDetail() {
         interest_rate: debt.interest_rate,
         minimum_payment: debt.minimum_payment || "",
         due_date: debt.due_date || "",
+        credit_limit: debt.credit_limit || "",
       });
     }
   }, [debt]);
