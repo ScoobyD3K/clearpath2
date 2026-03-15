@@ -87,6 +87,7 @@ export default function Profile() {
 
     try {
       await base44.auth.updateMe({
+        full_name: fullName,
         monthly_income: monthlyIncome ? parseFloat(monthlyIncome) : null,
       });
       
