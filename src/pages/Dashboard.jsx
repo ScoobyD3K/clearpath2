@@ -7,7 +7,6 @@ import { createPageUrl } from "@/utils";
 import { Plus, TrendingUp, DollarSign, CreditCard, Target, Zap, Settings, BarChart2 } from "lucide-react";
 import StatCard from "../components/dashboard/StatCard";
 import EditableStatCard from "../components/dashboard/EditableStatCard";
-import DebtCard from "../components/dashboard/DebtCard";
 import StrategySelector from "../components/strategy/StrategySelector";
 import NavigationEditor from "../components/dashboard/NavigationEditor";
 import CelebrationModal from "../components/debt/CelebrationModal";
