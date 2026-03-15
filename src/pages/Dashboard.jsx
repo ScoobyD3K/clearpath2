@@ -399,6 +399,11 @@ export default function Dashboard() {
         currentAmount={user?.monthly_income || 0}
         onSubmit={handleSavingsAdjustment}
       />
+
+      <BankAccountsModal
+        open={showBankAccounts}
+        onOpenChange={setShowBankAccounts}
+      />
     </div>
   );
 }
