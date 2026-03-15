@@ -339,7 +339,7 @@ export default function Debts() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {debts.map((debt) => (
+          {activeDebts.map((debt) => (
             <DebtCard
               key={debt.id}
               debt={debt}
@@ -357,6 +357,23 @@ export default function Debts() {
             />
           ))}
         </div>
+
+        {paidOffDebts.length > 0 && (
+          <div className="mt-10">
+            <h2 className="text-xl font-bold text-slate-700 mb-4">🎉 Paid Off</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 opacity-60">
+              {paidOffDebts.map((debt) => (
+                <DebtCard
+                  key={debt.id}
+                  debt={debt}
+                  onClick={() => window.location.href = createPageUrl("DebtDetail") + `?id=${debt.id}`}
+                  onEdit={(debt) => window.location.href = createPageUrl("DebtDetail") + `?id=${debt.id}`}
+                  onDelete={handleDeleteDebt}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       <QuickPaymentModal
