@@ -41,6 +41,11 @@ export default function Dashboard() {
     fetchUser();
   }, []);
 
+  const { data: bankAccounts = [] } = useQuery({
+    queryKey: ['bankAccounts'],
+    queryFn: () => base44.entities.BankAccount.list(),
+  });
+
   const { data: debts, isLoading } = useQuery({
     queryKey: ['debts'],
     queryFn: () => base44.entities.Debt.filter({ status: 'active' }, '-created_date'),
