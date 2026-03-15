@@ -21,6 +21,7 @@ export default function Profile() {
     const fetchUser = async () => {
       const userData = await base44.auth.me();
       setUser(userData);
+      setFullName(userData.full_name || "");
       setMonthlyIncome(userData.monthly_income || "");
       setProfilePicture(userData.profile_picture || null);
     };
