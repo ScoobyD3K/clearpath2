@@ -113,9 +113,16 @@ export default function Profile() {
   return (
     <div className="p-4 md:p-8 min-h-screen">
       <div className="max-w-3xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-slate-900">Your Profile</h1>
-          <p className="text-slate-600 mt-2">Update your personal and financial information</p>
+        <div className="flex items-center gap-4 mb-8">
+          <Link to={createPageUrl("Dashboard")}>
+            <Button variant="outline" size="icon">
+              <ArrowLeft className="w-4 h-4" />
+            </Button>
+          </Link>
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-slate-900">Your Profile</h1>
+            <p className="text-slate-600 mt-2">Update your personal and financial information</p>
+          </div>
         </div>
 
         <div className="space-y-6">
