@@ -264,7 +264,7 @@ export default function Dashboard() {
               icon={DollarSign}
               bgGradient="bg-gradient-to-br from-green-500 to-emerald-600"
               iconColor="text-green-600"
-              valueColor="text-green-700"
+              green={true}
             />
           </div>
           <StatCard
