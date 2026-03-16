@@ -14,7 +14,8 @@ export default function EditableStatCard({
   iconColor, 
   editable = false,
   onSave,
-  inputType = "number"
+  inputType = "number",
+  green = false
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
