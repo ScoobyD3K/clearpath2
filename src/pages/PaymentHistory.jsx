@@ -12,7 +12,10 @@ import { createPageUrl } from "@/utils";
 import { format, startOfMonth, endOfMonth, isWithinInterval, parseISO } from "date-fns";
 
 export default function PaymentHistory() {
-  const [selectedDebt, setSelectedDebt] = useState("all");
+  const urlParams = new URLSearchParams(window.location.search);
+  const preselectedDebtId = urlParams.get("debtId") || "all";
+
+  const [selectedDebt, setSelectedDebt] = useState(preselectedDebtId);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
