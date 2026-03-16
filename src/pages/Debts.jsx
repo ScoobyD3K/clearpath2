@@ -361,17 +361,35 @@ export default function Debts() {
 
         {paidOffDebts.length > 0 && (
           <div className="mt-10">
-            <h2 className="text-xl font-bold text-slate-700 mb-4">🎉 Paid Off</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 opacity-60">
-              {paidOffDebts.map((debt) => (
-                <DebtCard
-                  key={debt.id}
-                  debt={debt}
-                  onClick={() => window.location.href = createPageUrl("DebtDetail") + `?id=${debt.id}`}
-                  onEdit={(debt) => window.location.href = createPageUrl("DebtDetail") + `?id=${debt.id}`}
-                  onDelete={handleDeleteDebt}
-                />
-              ))}
+            <h2 className="text-xl font-bold text-slate-700 mb-2">🎉 Paid Off</h2>
+            <p className="text-sm text-amber-600 flex items-center gap-1 mb-4">
+              <Clock className="w-4 h-4" />
+              Paid-off debts are automatically deleted 7 days after payoff.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {paidOffDebts.map((debt) => {
+                const daysSincePaidOff = debt.updated_date
+                  ? differenceInDays(new Date(), new Date(debt.updated_date))
+                  : 0;
+                const daysLeft = Math.max(0, 7 - daysSincePaidOff);
+                return (
+                  <div key={debt.id} className="relative opacity-70">
+                    <div className="absolute top-2 left-2 z-20">
+                      <span className="text-xs bg-amber-100 text-amber-700 border border-amber-300 rounded px-2 py-0.5 flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        Deletes in {daysLeft}d
+                      </span>
+                    </div>
+                    <DebtCard
+                      debt={debt}
+                      onClick={() => window.location.href = createPageUrl("DebtDetail") + `?id=${debt.id}`}
+                      onEdit={(debt) => window.location.href = createPageUrl("DebtDetail") + `?id=${debt.id}`}
+                      onDelete={handleDeleteDebt}
+                      onViewHistory={(debt) => window.location.href = createPageUrl("PaymentHistory") + `?debtId=${debt.id}`}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
