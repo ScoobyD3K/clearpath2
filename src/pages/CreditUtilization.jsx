@@ -14,8 +14,8 @@ export default function CreditUtilization() {
     queryFn: () => base44.entities.Debt.list('name'),
   });
 
-  const activeCards = debts.filter(d => d.credit_limit && d.status === 'active');
-  const paidOffCards = debts.filter(d => d.credit_limit && d.status === 'paid_off');
+  const activeCards = debts.filter(d => d.credit_limit > 0 && d.status === 'active');
+  const paidOffCards = debts.filter(d => d.credit_limit > 0 && d.status === 'paid_off');
 
   const allCards = debts.filter(d => d.credit_limit);
   const totalLimit = allCards.reduce((s, d) => s + d.credit_limit, 0);
