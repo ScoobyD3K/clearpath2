@@ -222,15 +222,6 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setShowNavEditor(true)}
-              title="Customize Navigation"
-              className="h-9 w-9"
-            >
-              <Settings className="w-4 h-4" />
-            </Button>
             <Link to={createPageUrl("Strategy")}>
               <Button variant="outline" size="icon" title="Strategy">
                 <Zap className="w-4 h-4" />
