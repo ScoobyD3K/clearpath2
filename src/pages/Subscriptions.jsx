@@ -34,6 +34,9 @@ export default function Subscriptions() {
     next_billing_date: "",
   });
 
+  const [editingId, setEditingId] = useState(null);
+  const [editForm, setEditForm] = useState({});
+
   const { data: subscriptions = [], isLoading } = useQuery({
     queryKey: ["subscriptions"],
     queryFn: () => base44.entities.Subscription.list("-created_date"),
