@@ -3,13 +3,13 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Calendar, Percent, DollarSign, TrendingDown, Edit, Plus, Minus, X } from "lucide-react";
+import { Calendar, Percent, DollarSign, TrendingDown, Edit, Plus, Minus, X, History } from "lucide-react";
 import { format, addMonths } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
-export default function DebtCard({ debt, onClick, onEdit, onQuickPay, onQuickAdd, onDelete }) {
+export default function DebtCard({ debt, onClick, onEdit, onQuickPay, onQuickAdd, onDelete, onViewHistory }) {
   const calculatePayoffDate = () => {
     if (!debt.minimum_payment || debt.minimum_payment <= 0) return null;
     
@@ -185,6 +185,18 @@ export default function DebtCard({ debt, onClick, onEdit, onQuickPay, onQuickAdd
           title="View Details"
         >
           <Edit className="w-3 h-3" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={(e) => {
+            e.stopPropagation();
+            onViewHistory?.(debt);
+          }}
+          className="h-7 w-7 bg-purple-100 hover:bg-purple-200 text-purple-700 shadow-md"
+          title="Payment History"
+        >
+          <History className="w-3 h-3" />
         </Button>
       </div>
     </Card>
