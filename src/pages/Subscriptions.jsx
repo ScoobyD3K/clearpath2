@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { ArrowLeft, Plus, Trash2, Receipt, RefreshCw, Calendar } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Receipt, RefreshCw, Calendar, Pencil, Check, X } from "lucide-react";
 import { toast } from "sonner";
 
 const BILLING_CYCLES = ["monthly", "yearly", "weekly"];
