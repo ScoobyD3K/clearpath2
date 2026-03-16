@@ -235,12 +235,6 @@ export default function Dashboard() {
                 <Zap className="w-4 h-4" />
               </Button>
             </Link>
-
-            <Link to={createPageUrl("Debts")}>
-              <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg h-9 w-9 px-0" title="Add Debt">
-                <Plus className="w-4 h-4" />
-              </Button>
-            </Link>
           </div>
         </div>
 
