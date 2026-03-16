@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import MinimumPayments from './pages/MinimumPayments';
 import CreditUtilization from './pages/CreditUtilization';
+import Subscriptions from './pages/Subscriptions';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 

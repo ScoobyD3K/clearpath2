@@ -231,8 +231,21 @@ export default function Dashboard() {
               <Settings className="w-4 h-4" />
             </Button>
             <Link to={createPageUrl("Strategy")}>
-              <Button variant="outline" className="gap-2 h-9 w-9 px-0" title="Strategy">
+              <Button variant="outline" size="icon" title="Strategy">
                 <Zap className="w-4 h-4" />
+              </Button>
+            </Link>
+            <Button
+              size="icon"
+              onClick={() => setShowBankAccounts(true)}
+              title="Savings"
+              className="h-9 w-9 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg"
+            >
+              <PiggyBank className="w-4 h-4" />
+            </Button>
+            <Link to={createPageUrl("Subscriptions")}>
+              <Button size="icon" title="Subscriptions" className="h-9 w-9 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-lg">
+                <Receipt className="w-4 h-4" />
               </Button>
             </Link>
             <Link to={createPageUrl("Debts")}>
