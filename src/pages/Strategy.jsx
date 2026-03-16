@@ -41,57 +41,43 @@ export default function Strategy() {
     },
   });
 
-  const calculateComparison = () => {
-    const strategies = ['avalanche', 'snowball'];
-    const results = {};
+  const runSimulation = (sortedDebts, withExtra) => {
+    let totalInterest = 0;
+    let totalMonths = 0;
+    let remainingDebts = sortedDebts.map(d => ({ ...d, remaining: d.current_balance }));
 
-    strategies.forEach(strategy => {
-      const sortedDebts = [...debts].sort((a, b) => {
-        if (strategy === "snowball") {
-          return a.current_balance - b.current_balance;
-        } else {
-          return b.interest_rate - a.interest_rate;
+    while (remainingDebts.some(d => d.remaining > 0) && totalMonths < 600) {
+      totalMonths++;
+      remainingDebts.forEach((debt, index) => {
+        if (debt.remaining > 0) {
+          const monthlyRate = debt.interest_rate / 100 / 12;
+          const interest = debt.remaining * monthlyRate;
+          totalInterest += interest;
+          let payment = debt.minimum_payment || 0;
+          if (index === 0 && withExtra) payment += extraPayment;
+          const principal = Math.min(payment - interest, debt.remaining);
+          debt.remaining = Math.max(0, debt.remaining - principal);
         }
       });
+      remainingDebts = remainingDebts.filter(d => d.remaining > 0);
+    }
 
-      let totalInterest = 0;
-      let totalMonths = 0;
-      let remainingDebts = sortedDebts.map(d => ({
-        ...d,
-        remaining: d.current_balance,
-      }));
+    return { totalInterest, totalMonths, years: Math.floor(totalMonths / 12), months: totalMonths % 12 };
+  };
 
-      const totalMinPayments = remainingDebts.reduce((sum, d) => sum + (d.minimum_payment || 0), 0);
+  const calculateComparison = () => {
+    const results = {};
 
-      while (remainingDebts.some(d => d.remaining > 0) && totalMonths < 600) {
-        totalMonths++;
-        
-        remainingDebts.forEach((debt, index) => {
-          if (debt.remaining > 0) {
-            const monthlyRate = debt.interest_rate / 100 / 12;
-            const interest = debt.remaining * monthlyRate;
-            totalInterest += interest;
-            
-            let payment = debt.minimum_payment || 0;
-            if (index === 0 && extraPayment > 0) {
-              payment += extraPayment;
-            }
-            
-            const principal = Math.min(payment - interest, debt.remaining);
-            debt.remaining = Math.max(0, debt.remaining - principal);
-          }
-        });
-        
-        remainingDebts = remainingDebts.filter(d => d.remaining > 0);
-      }
-
-      results[strategy] = {
-        totalInterest,
-        totalMonths,
-        years: Math.floor(totalMonths / 12),
-        months: totalMonths % 12,
-      };
+    ['avalanche', 'snowball'].forEach(strategy => {
+      const sorted = [...debts].sort((a, b) =>
+        strategy === "snowball" ? a.current_balance - b.current_balance : b.interest_rate - a.interest_rate
+      );
+      results[strategy] = runSimulation(sorted, true);
     });
+
+    // Minimum payments only (no extra, no strategy ordering — just sorted by interest for baseline)
+    const sortedForMin = [...debts].sort((a, b) => b.interest_rate - a.interest_rate);
+    results.minimumOnly = runSimulation(sortedForMin, false);
 
     return results;
   };
