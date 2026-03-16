@@ -213,43 +213,71 @@ export default function Subscriptions() {
           <div className="space-y-3">
             {subscriptions.map((sub) => (
               <Card key={sub.id} className="border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                <CardContent className="p-4 flex items-center gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-semibold text-slate-900">{sub.name}</span>
-                      <Badge className={categoryColors[sub.category] || categoryColors.other}>
-                        {sub.category}
-                      </Badge>
+                <CardContent className="p-4">
+                  {editingId === sub.id ? (
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                          <Label className="text-xs">Name</Label>
+                          <Input value={editForm.name} onChange={(e) => setEditForm(p => ({ ...p, name: e.target.value }))} />
+                        </div>
+                        <div>
+                          <Label className="text-xs">Amount</Label>
+                          <div className="relative">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+                            <Input type="number" step="0.01" value={editForm.amount} onChange={(e) => setEditForm(p => ({ ...p, amount: e.target.value }))} className="pl-8" />
+                          </div>
+                        </div>
+                        <div>
+                          <Label className="text-xs">Billing Cycle</Label>
+                          <select value={editForm.billing_cycle} onChange={(e) => setEditForm(p => ({ ...p, billing_cycle: e.target.value }))} className="w-full h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm">
+                            {BILLING_CYCLES.map(c => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
+                          </select>
+                        </div>
+                        <div>
+                          <Label className="text-xs">Category</Label>
+                          <select value={editForm.category} onChange={(e) => setEditForm(p => ({ ...p, category: e.target.value }))} className="w-full h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm">
+                            {CATEGORIES.map(c => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
+                          </select>
+                        </div>
+                        <div>
+                          <Label className="text-xs">Next Billing Date</Label>
+                          <Input type="date" value={editForm.next_billing_date} onChange={(e) => setEditForm(p => ({ ...p, next_billing_date: e.target.value }))} />
+                        </div>
+                      </div>
+                      <div className="flex justify-end gap-2 pt-1">
+                        <Button variant="outline" size="sm" onClick={() => setEditingId(null)}><X className="w-3 h-3 mr-1" />Cancel</Button>
+                        <Button size="sm" onClick={() => saveEdit(sub.id)} disabled={updateMutation.isPending} className="bg-violet-600 hover:bg-violet-700"><Check className="w-3 h-3 mr-1" />Save</Button>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-3 mt-1 text-sm text-slate-500">
-                      <span className="flex items-center gap-1">
-                        <RefreshCw className="w-3 h-3" />
-                        {sub.billing_cycle}
-                      </span>
-                      {sub.next_billing_date && (
-                        <span className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
-                          Next: {sub.next_billing_date}
-                        </span>
-                      )}
+                  ) : (
+                    <div className="flex items-center gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-semibold text-slate-900">{sub.name}</span>
+                          <Badge className={categoryColors[sub.category] || categoryColors.other}>{sub.category}</Badge>
+                        </div>
+                        <div className="flex items-center gap-3 mt-1 text-sm text-slate-500">
+                          <span className="flex items-center gap-1"><RefreshCw className="w-3 h-3" />{sub.billing_cycle}</span>
+                          {sub.next_billing_date && (
+                            <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />Next: {sub.next_billing_date}</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-lg text-slate-900">${sub.amount?.toFixed(2)}</p>
+                        <p className="text-xs text-slate-500">
+                          ${sub.billing_cycle === "yearly" ? (sub.amount / 12).toFixed(2) : sub.billing_cycle === "weekly" ? (sub.amount * 4.33).toFixed(2) : sub.amount?.toFixed(2)}/mo
+                        </p>
+                      </div>
+                      <Button variant="ghost" size="icon" onClick={() => startEdit(sub)} className="text-slate-400 hover:text-violet-600 hover:bg-violet-50">
+                        <Pencil className="w-4 h-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(sub.id)} className="text-red-400 hover:text-red-600 hover:bg-red-50">
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-lg text-slate-900">${sub.amount?.toFixed(2)}</p>
-                    <p className="text-xs text-slate-500">
-                      ${sub.billing_cycle === "yearly" ? (sub.amount / 12).toFixed(2) :
-                        sub.billing_cycle === "weekly" ? (sub.amount * 4.33).toFixed(2) :
-                        sub.amount?.toFixed(2)}/mo
-                    </p>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => deleteMutation.mutate(sub.id)}
-                    className="text-red-400 hover:text-red-600 hover:bg-red-50"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                  )}
                 </CardContent>
               </Card>
             ))}
