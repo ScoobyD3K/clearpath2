@@ -69,6 +69,12 @@ const defaultNavigationItems = [
     visible: true,
   },
   {
+    title: "Subscriptions",
+    page: "Subscriptions",
+    icon: "Receipt",
+    visible: true,
+  },
+  {
     title: "Profile",
     page: "Profile",
     icon: "DollarSign",
@@ -85,6 +91,7 @@ const iconMap = {
   DollarSign,
   Target,
   Calendar,
+  Receipt,
 };
 
 export default function Layout({ children, currentPageName }) {
