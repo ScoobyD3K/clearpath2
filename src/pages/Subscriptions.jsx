@@ -60,6 +60,24 @@ export default function Subscriptions() {
     },
   });
 
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }) => base44.entities.Subscription.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["subscriptions"] });
+      setEditingId(null);
+      toast.success("Subscription updated!");
+    },
+  });
+
+  const startEdit = (sub) => {
+    setEditingId(sub.id);
+    setEditForm({ name: sub.name, amount: sub.amount, billing_cycle: sub.billing_cycle, category: sub.category, next_billing_date: sub.next_billing_date || "" });
+  };
+
+  const saveEdit = (id) => {
+    updateMutation.mutate({ id, data: { ...editForm, amount: parseFloat(editForm.amount) } });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     createMutation.mutate({ ...form, amount: parseFloat(form.amount) });
