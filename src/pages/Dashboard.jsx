@@ -306,6 +306,9 @@ export default function Dashboard() {
           )}
         </div>
 
+        <div className="mt-4">
+          <SubscriptionCard />
+        </div>
 
       </div>
 
