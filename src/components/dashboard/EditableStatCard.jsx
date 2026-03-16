@@ -44,7 +44,13 @@ export default function EditableStatCard({
       "relative overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-md",
       editable && !isEditing && "cursor-pointer group"
     )}
-    style={{ 
+    style={green ? {
+      backgroundColor: 'rgba(34, 197, 94, 0.85)',
+      border: '2px solid transparent',
+      backgroundImage: 'linear-gradient(rgba(34, 197, 94, 0.85), rgba(16, 185, 129, 0.85)), linear-gradient(135deg, #CDE7CF, #B9DFF5, #A2B7C8)',
+      backgroundOrigin: 'border-box',
+      backgroundClip: 'padding-box, border-box'
+    } : { 
       backgroundColor: 'rgba(185, 223, 245, 0.75)',
       border: '2px solid transparent',
       backgroundImage: 'linear-gradient(rgba(185, 223, 245, 0.75), rgba(185, 223, 245, 0.75)), linear-gradient(135deg, #CDE7CF, #B9DFF5, #A2B7C8)',
