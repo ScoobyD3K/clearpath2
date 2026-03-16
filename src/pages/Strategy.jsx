@@ -169,6 +169,25 @@ export default function Strategy() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-6 space-y-4">
+                    {/* Minimum only baseline */}
+                    <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                      <div className="font-semibold text-slate-700 mb-2">Minimums Only (baseline)</div>
+                      <div className="text-sm space-y-1">
+                        <div className="flex justify-between">
+                          <span className="text-slate-600">Total Interest:</span>
+                          <span className="font-semibold text-slate-800">
+                            ${comparison.minimumOnly.totalInterest.toLocaleString(undefined, {maximumFractionDigits: 0})}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-600">Time to Payoff:</span>
+                          <span className="font-semibold text-slate-800">
+                            {comparison.minimumOnly.years}y {comparison.minimumOnly.months}m
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
                     <div className="p-4 bg-blue-50 rounded-lg">
                       <div className="font-semibold text-blue-900 mb-2">Avalanche Method</div>
                       <div className="text-sm space-y-1">
@@ -182,6 +201,12 @@ export default function Strategy() {
                           <span className="text-blue-700">Time to Payoff:</span>
                           <span className="font-semibold text-blue-900">
                             {comparison.avalanche.years}y {comparison.avalanche.months}m
+                          </span>
+                        </div>
+                        <div className="flex justify-between pt-1 border-t border-blue-200 mt-1">
+                          <span className="text-blue-700 font-medium">Saves vs minimums:</span>
+                          <span className="font-bold text-green-700">
+                            ${(comparison.minimumOnly.totalInterest - comparison.avalanche.totalInterest).toLocaleString(undefined, {maximumFractionDigits: 0})}
                           </span>
                         </div>
                       </div>
@@ -202,11 +227,17 @@ export default function Strategy() {
                             {comparison.snowball.years}y {comparison.snowball.months}m
                           </span>
                         </div>
+                        <div className="flex justify-between pt-1 border-t border-green-200 mt-1">
+                          <span className="text-green-700 font-medium">Saves vs minimums:</span>
+                          <span className="font-bold text-green-700">
+                            ${(comparison.minimumOnly.totalInterest - comparison.snowball.totalInterest).toLocaleString(undefined, {maximumFractionDigits: 0})}
+                          </span>
+                        </div>
                       </div>
                     </div>
 
                     <div className="pt-3 border-t border-slate-200">
-                      <div className="text-xs text-slate-600 mb-1">Potential Savings (Avalanche)</div>
+                      <div className="text-xs text-slate-600 mb-1">Avalanche saves over Snowball</div>
                       <div className="text-2xl font-bold text-green-600">
                         ${(comparison.snowball.totalInterest - comparison.avalanche.totalInterest).toLocaleString(undefined, {maximumFractionDigits: 0})}
                       </div>
