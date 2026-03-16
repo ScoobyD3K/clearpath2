@@ -248,7 +248,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-4">
           <Link to={createPageUrl("Debts")} className="block">
             <StatCard
               title="Total Debt"
