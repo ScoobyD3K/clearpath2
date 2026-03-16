@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Plus, TrendingUp, DollarSign, CreditCard, Target, Zap, Settings, BarChart2, PiggyBank, Receipt } from "lucide-react";
+import { Plus, TrendingUp, DollarSign, CreditCard, Target, Zap, Settings, BarChart2 } from "lucide-react";
 import StatCard from "../components/dashboard/StatCard";
 import EditableStatCard from "../components/dashboard/EditableStatCard";
 import StrategySelector from "../components/strategy/StrategySelector";
@@ -235,19 +235,7 @@ export default function Dashboard() {
                 <Zap className="w-4 h-4" />
               </Button>
             </Link>
-            <Button
-              size="icon"
-              onClick={() => setShowBankAccounts(true)}
-              title="Savings"
-              className="h-9 w-9 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg"
-            >
-              <PiggyBank className="w-4 h-4" />
-            </Button>
-            <Link to={createPageUrl("Subscriptions")}>
-              <Button size="icon" title="Subscriptions" className="h-9 w-9 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-lg">
-                <Receipt className="w-4 h-4" />
-              </Button>
-            </Link>
+
             <Link to={createPageUrl("Debts")}>
               <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg h-9 w-9 px-0" title="Add Debt">
                 <Plus className="w-4 h-4" />
