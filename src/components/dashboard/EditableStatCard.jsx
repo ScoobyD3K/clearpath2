@@ -69,68 +69,51 @@ export default function EditableStatCard({
         </div>
       )}
 
-      <CardContent className="p-6 relative z-10">
-        <div className="flex justify-between items-start mb-4">
-          <div className={cn("p-3 rounded-xl bg-white/20 backdrop-blur-sm", iconColor)}>
-            <Icon className="w-6 h-6 text-white" />
+      <CardContent className="p-3 relative z-10">
+        <div className="flex items-center justify-between mb-2">
+          <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center", bgGradient || "bg-white/20")}>
+            <Icon className="w-4 h-4 text-white" />
           </div>
           {trend && (
-            <div className="flex items-center gap-1 text-white/90">
-              {trend > 0 ? (
-                <TrendingUp className="w-4 h-4" />
-              ) : (
-                <TrendingDown className="w-4 h-4" />
-              )}
-              <span className="text-xs font-medium">{Math.abs(trend)}%</span>
+            <div className="flex items-center gap-1 text-xs font-medium text-white/90">
+              {trend > 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+              {Math.abs(trend)}%
             </div>
           )}
         </div>
         
-        <div>
-          <p className="text-white/80 text-sm font-medium mb-1">{title}</p>
-          
-          {isEditing ? (
-            <div className="space-y-3">
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white font-bold text-xl">$</span>
-                <Input
-                  type={inputType}
-                  step="0.01"
-                  value={editValue}
-                  onChange={(e) => setEditValue(e.target.value)}
-                  className="bg-white/20 border-white/30 text-white text-2xl font-bold pl-8 placeholder:text-white/50"
-                  placeholder="0"
-                  autoFocus
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleSave();
-                    if (e.key === 'Escape') handleCancel();
-                  }}
-                />
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  onClick={handleSave}
-                  className="flex-1 bg-white/20 hover:bg-white/30 text-white border-white/30"
-                >
-                  <Save className="w-3 h-3 mr-1" />
-                  Save
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={handleCancel}
-                  className="flex-1 bg-white/10 hover:bg-white/20 text-white"
-                >
-                  <X className="w-3 h-3 mr-1" />
-                  Cancel
-                </Button>
-              </div>
+        <div className="text-xs text-slate-600 mb-1">{title}</div>
+        
+        {isEditing ? (
+          <div className="space-y-2">
+            <div className="relative">
+              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-600 font-bold text-sm">$</span>
+              <Input
+                type={inputType}
+                step="0.01"
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                className="text-sm font-bold pl-6 h-7"
+                placeholder="0"
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleSave();
+                  if (e.key === 'Escape') handleCancel();
+                }}
+              />
             </div>
-          ) : (
-            <p className="text-white text-3xl font-bold tracking-tight">{value}</p>
-          )}
-        </div>
+            <div className="flex gap-1">
+              <Button size="sm" onClick={handleSave} className="flex-1 h-6 text-xs">
+                <Save className="w-3 h-3 mr-1" />Save
+              </Button>
+              <Button size="sm" variant="ghost" onClick={handleCancel} className="flex-1 h-6 text-xs">
+                <X className="w-3 h-3 mr-1" />Cancel
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="text-xl font-bold text-slate-900">{value}</div>
+        )}
       </CardContent>
     </Card>
   );
