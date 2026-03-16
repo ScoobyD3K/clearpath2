@@ -355,6 +355,7 @@ export default function Debts() {
                 setQuickPaymentType("add");
               }}
               onDelete={handleDeleteDebt}
+              onViewHistory={(debt) => window.location.href = createPageUrl("PaymentHistory") + `?debtId=${debt.id}`}
             />
           ))}
         </div>
