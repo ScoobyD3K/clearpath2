@@ -1,0 +1,74 @@
+{
+  "name": "AdvisorAccess",
+  "type": "object",
+  "properties": {
+    "client_email": {
+      "type": "string",
+      "description": "Email of the individual client granting access"
+    },
+    "advisor_email": {
+      "type": "string",
+      "description": "Email of the financial advisor being granted access"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "revoked"
+      ],
+      "default": "pending",
+      "description": "Current status of the access grant"
+    },
+    "client_name": {
+      "type": "string",
+      "description": "Display name of the client"
+    },
+    "advisor_name": {
+      "type": "string",
+      "description": "Display name of the advisor"
+    },
+    "message": {
+      "type": "string",
+      "description": "Optional message from the advisor when requesting access"
+    }
+  },
+  "required": [
+    "client_email",
+    "advisor_email",
+    "status"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "client_email": "{{user.email}}"
+        },
+        {
+          "advisor_email": "{{user.email}}"
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "client_email": "{{user.email}}"
+        },
+        {
+          "advisor_email": "{{user.email}}"
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "client_email": "{{user.email}}"
+        },
+        {
+          "advisor_email": "{{user.email}}"
+        }
+      ]
+    }
+  }
+}

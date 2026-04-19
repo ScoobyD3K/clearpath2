@@ -1,0 +1,48 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "user"
+      ],
+      "default": "user"
+    },
+    "account_type": {
+      "type": "string",
+      "enum": [
+        "individual",
+        "advisor"
+      ],
+      "default": "individual",
+      "description": "Whether this user is an individual or a financial advisor"
+    },
+    "profile_picture": {
+      "type": "string",
+      "description": "URL of the user's profile picture"
+    },
+    "monthly_income": {
+      "type": "number",
+      "description": "User's savings or available funds"
+    },
+    "payoff_strategy": {
+      "type": "string",
+      "enum": [
+        "avalanche",
+        "snowball"
+      ],
+      "description": "Preferred debt payoff strategy"
+    },
+    "email_notifications": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to receive email notifications"
+    },
+    "custom_navigation": {
+      "type": "array",
+      "description": "Custom navigation configuration"
+    }
+  }
+}

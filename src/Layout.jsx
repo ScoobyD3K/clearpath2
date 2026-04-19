@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { LayoutDashboard, CreditCard, TrendingUp, DollarSign, Bell, BarChart3, Target, Calendar, Receipt } from "lucide-react";
+import { LayoutDashboard, CreditCard, TrendingUp, DollarSign, Bell, BarChart3, Target, Calendar, Receipt, Briefcase } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -98,6 +98,7 @@ const iconMap = {
   Target,
   Calendar,
   Receipt,
+  Briefcase,
 };
 
 export default function Layout({ children, currentPageName }) {
@@ -200,6 +201,14 @@ export default function Layout({ children, currentPageName }) {
                 <h1 className="text-xl font-bold text-slate-900 md:hidden">ClearPath</h1>
               </div>
               <div className="ml-auto flex items-center gap-4">
+                {user?.account_type === 'advisor' && (
+                  <Link to={createPageUrl("AdvisorDashboard")}>
+                    <Button size="sm" className="bg-cyan-600 hover:bg-cyan-700 text-white gap-1">
+                      <Briefcase className="w-4 h-4" />
+                      <span className="hidden md:inline">My Clients</span>
+                    </Button>
+                  </Link>
+                )}
                 <NotificationBell />
                 {user && (
                   <Link to={createPageUrl("Profile")}>

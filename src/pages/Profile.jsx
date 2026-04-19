@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { DollarSign, Save, User as UserIcon, Upload, X, ArrowLeft, Home } from "lucide-react";
+import { DollarSign, Save, User as UserIcon, Upload, X, ArrowLeft, Briefcase } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { toast } from "sonner";
+import AdvisorAccessManager from "../components/profile/AdvisorAccessManager";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -290,6 +291,62 @@ export default function Profile() {
               </form>
             </CardContent>
           </Card>
+        {/* Advisor Access (for individual users) */}
+        {user.account_type !== 'advisor' && (
+          <AdvisorAccessManager user={user} />
+        )}
+
+        {/* Account Type Card */}
+        <Card className="border-slate-200 shadow-lg">
+          <CardHeader className="border-b border-slate-100">
+            <CardTitle className="flex items-center gap-2">
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                <Briefcase className="w-5 h-5 text-white" />
+              </div>
+              Account Type
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 space-y-4">
+            <p className="text-sm text-slate-500">
+              Switch to an advisor account to manage multiple client accounts.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={async () => {
+                  await base44.auth.updateMe({ account_type: 'individual' });
+                  const u = await base44.auth.me();
+                  setUser(u);
+                  toast.success("Switched to Individual account.");
+                }}
+                className={`flex-1 p-4 rounded-xl border-2 text-left transition-all ${user.account_type !== 'advisor' ? 'border-cyan-500 bg-cyan-50' : 'border-slate-200 bg-white hover:border-slate-300'}`}
+              >
+                <p className="font-semibold text-slate-800">Individual</p>
+                <p className="text-xs text-slate-500 mt-1">Track your own finances and grant advisors access</p>
+              </button>
+              <button
+                onClick={async () => {
+                  await base44.auth.updateMe({ account_type: 'advisor' });
+                  const u = await base44.auth.me();
+                  setUser(u);
+                  toast.success("Switched to Advisor account.");
+                }}
+                className={`flex-1 p-4 rounded-xl border-2 text-left transition-all ${user.account_type === 'advisor' ? 'border-cyan-500 bg-cyan-50' : 'border-slate-200 bg-white hover:border-slate-300'}`}
+              >
+                <p className="font-semibold text-slate-800">Financial Advisor</p>
+                <p className="text-xs text-slate-500 mt-1">Manage multiple client accounts from one place</p>
+              </button>
+            </div>
+            {user.account_type === 'advisor' && (
+              <Link to={createPageUrl("AdvisorDashboard")}>
+                <Button className="w-full bg-cyan-600 hover:bg-cyan-700 mt-2">
+                  <Briefcase className="w-4 h-4 mr-2" />
+                  Go to Advisor Dashboard
+                </Button>
+              </Link>
+            )}
+          </CardContent>
+        </Card>
+
         </div>
       </div>
     </div>
