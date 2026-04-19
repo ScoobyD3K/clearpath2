@@ -22,12 +22,6 @@ import { base44 } from "@/api/base44Client";
 const defaultNavigationItems = [
   {
     title: "Home",
-    page: "Home",
-    icon: "LayoutDashboard",
-    visible: true,
-  },
-  {
-    title: "Dashboard",
     page: "Dashboard",
     icon: "LayoutDashboard",
     visible: true,
