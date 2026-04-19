@@ -9,7 +9,7 @@ import StatCard from "../components/dashboard/StatCard";
 import EditableStatCard from "../components/dashboard/EditableStatCard";
 import StrategySelector from "../components/strategy/StrategySelector";
 import NavigationEditor from "../components/dashboard/NavigationEditor";
-import CelebrationModal from "../components/debt/CelebrationModal";
+import CelebrationModal, { checkMilestone } from "../components/debt/CelebrationModal";
 import QuickPaymentModal from "../components/debt/QuickPaymentModal";
 import SavingsAdjustmentModal from "../components/dashboard/SavingsAdjustmentModal";
 import BankAccountsModal from "../components/dashboard/BankAccountsModal";
@@ -25,6 +25,7 @@ export default function Dashboard() {
   const [quickPaymentType, setQuickPaymentType] = useState("pay");
   const [showCelebration, setShowCelebration] = useState(false);
   const [paidOffDebtInfo, setPaidOffDebtInfo] = useState(null);
+  const [celebrationMilestone, setCelebrationMilestone] = useState(null);
   const [showSavingsAdjustment, setShowSavingsAdjustment] = useState(false);
   const [showBankAccounts, setShowBankAccounts] = useState(false);
   const queryClient = useQueryClient();
@@ -95,18 +96,27 @@ export default function Dashboard() {
         : debt.current_balance + amount;
       
       const isPaidOff = newBalance === 0;
-      
+
       await base44.entities.Payment.create({
         debt_id: debt.id,
         amount: amount,
         payment_date: format(new Date(), "yyyy-MM-dd"),
         notes: type === "pay" ? "Quick payment" : "Balance adjustment",
       });
-      
+
       await base44.entities.Debt.update(debt.id, {
         current_balance: newBalance,
         status: isPaidOff ? "paid_off" : "active",
       });
+
+      if (type === "pay") {
+        const milestone = checkMilestone(debt.current_balance, newBalance, debt.total_amount);
+        if (milestone) {
+          setPaidOffDebtInfo({ name: debt.name, amount: debt.total_amount });
+          setCelebrationMilestone(milestone);
+          setShowCelebration(true);
+        }
+      }
 
       if (isPaidOff) {
         setPaidOffDebtInfo({
@@ -321,6 +331,7 @@ export default function Dashboard() {
         onOpenChange={setShowCelebration}
         debtName={paidOffDebtInfo?.name || ""}
         totalAmount={paidOffDebtInfo?.amount || 0}
+        milestone={celebrationMilestone || 100}
       />
 
       <SavingsAdjustmentModal

@@ -12,7 +12,7 @@ import { createPageUrl } from "@/utils";
 import { toast } from "sonner";
 import DebtCard from "../components/dashboard/DebtCard";
 import QuickPaymentModal from "../components/debt/QuickPaymentModal";
-import CelebrationModal from "../components/debt/CelebrationModal";
+import CelebrationModal, { checkMilestone } from "../components/debt/CelebrationModal";
 import { format } from "date-fns";
 
 export default function Debts() {
@@ -31,6 +31,7 @@ export default function Debts() {
   const [quickPaymentType, setQuickPaymentType] = useState("pay");
   const [showCelebration, setShowCelebration] = useState(false);
   const [paidOffDebtInfo, setPaidOffDebtInfo] = useState(null);
+  const [celebrationMilestone, setCelebrationMilestone] = useState(null);
 
   const queryClient = useQueryClient();
 
@@ -63,18 +64,27 @@ export default function Debts() {
         : debt.current_balance + amount;
       
       const isPaidOff = newBalance === 0;
-      
+
       await base44.entities.Payment.create({
         debt_id: debt.id,
         amount: amount,
         payment_date: format(new Date(), "yyyy-MM-dd"),
         notes: type === "pay" ? "Quick payment" : "Balance adjustment",
       });
-      
+
       await base44.entities.Debt.update(debt.id, {
         current_balance: newBalance,
         status: isPaidOff ? "paid_off" : "active",
       });
+
+      if (type === "pay") {
+        const milestone = checkMilestone(debt.current_balance, newBalance, debt.total_amount);
+        if (milestone) {
+          setPaidOffDebtInfo({ name: debt.name, amount: debt.total_amount });
+          setCelebrationMilestone(milestone);
+          setShowCelebration(true);
+        }
+      }
 
       if (isPaidOff) {
         setPaidOffDebtInfo({
@@ -409,6 +419,7 @@ export default function Debts() {
         onOpenChange={setShowCelebration}
         debtName={paidOffDebtInfo?.name || ""}
         totalAmount={paidOffDebtInfo?.amount || 0}
+        milestone={celebrationMilestone || 100}
       />
     </div>
   );
