@@ -64,7 +64,6 @@ export default function Dashboard() {
     mutationFn: ({ id, data }) => base44.entities.Debt.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['debts'] });
-      setEditingDebt(null);
     },
   });
 
