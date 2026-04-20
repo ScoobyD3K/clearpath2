@@ -12,6 +12,7 @@ import CreditUtilization from './pages/CreditUtilization';
 import Subscriptions from './pages/Subscriptions';
 import AdvisorDashboard from './pages/AdvisorDashboard';
 import BankAccounts from './pages/BankAccounts';
+import Messages from './pages/Messages';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -59,6 +60,7 @@ const AuthenticatedApp = () => {
         <Route path="/Subscriptions" element={<LayoutWrapper currentPageName="Subscriptions"><Subscriptions /></LayoutWrapper>} />
         <Route path="/AdvisorDashboard" element={<LayoutWrapper currentPageName="AdvisorDashboard"><AdvisorDashboard /></LayoutWrapper>} />
         <Route path="/BankAccounts" element={<LayoutWrapper currentPageName="BankAccounts"><BankAccounts /></LayoutWrapper>} />
+        <Route path="/Messages" element={<LayoutWrapper currentPageName="Messages"><Messages /></LayoutWrapper>} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </LayoutWrapper>

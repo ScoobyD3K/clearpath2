@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { LayoutDashboard, CreditCard, TrendingUp, DollarSign, Bell, BarChart3, Target, Calendar, Receipt, Briefcase } from "lucide-react";
+import { LayoutDashboard, CreditCard, TrendingUp, DollarSign, Bell, BarChart3, Target, Calendar, Receipt, Briefcase, MessageSquare } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -75,6 +75,12 @@ const defaultNavigationItems = [
     visible: true,
   },
   {
+    title: "Messages",
+    page: "Messages",
+    icon: "MessageSquare",
+    visible: true,
+  },
+  {
     title: "Profile",
     page: "Profile",
     icon: "DollarSign",
@@ -93,6 +99,7 @@ const iconMap = {
   Calendar,
   Receipt,
   Briefcase,
+  MessageSquare,
 };
 
 export default function Layout({ children, currentPageName }) {

@@ -4,12 +4,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, CreditCard, Target, DollarSign, TrendingUp, Loader2, AlertCircle } from "lucide-react";
+import { ArrowLeft, CreditCard, Target, DollarSign, TrendingUp, Loader2, AlertCircle, MessageSquare, BarChart3 } from "lucide-react";
+import MessageThread from "../messaging/MessageThread";
 
-export default function ClientDetailView({ clientEmail, clientName, onBack }) {
+export default function ClientDetailView({ clientEmail, clientName, onBack, advisorEmail, advisorName }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState("overview");
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    base44.auth.me().then(setUser);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,6 +80,45 @@ export default function ClientDetailView({ clientEmail, clientName, onBack }) {
           <Badge className="ml-auto bg-cyan-100 text-cyan-700">Read-Only View</Badge>
         </div>
 
+        {/* Tabs */}
+        <div className="flex gap-2 mb-6 border-b border-slate-200">
+          <button
+            onClick={() => setActiveTab("overview")}
+            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === "overview" ? "border-cyan-600 text-cyan-600" : "border-transparent text-slate-500 hover:text-slate-700"
+            }`}
+          >
+            <BarChart3 className="w-4 h-4" /> Overview
+          </button>
+          <button
+            onClick={() => setActiveTab("messages")}
+            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === "messages" ? "border-cyan-600 text-cyan-600" : "border-transparent text-slate-500 hover:text-slate-700"
+            }`}
+          >
+            <MessageSquare className="w-4 h-4" /> Messages
+          </button>
+        </div>
+
+        {activeTab === "messages" && user ? (
+          <Card className="shadow-md">
+            <CardHeader className="border-b border-slate-100 pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <MessageSquare className="w-4 h-4 text-cyan-500" />
+                Conversation with {clientName}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <MessageThread
+                currentUserEmail={user.email}
+                currentUserName={user.full_name || user.email}
+                otherEmail={clientEmail}
+                otherName={clientName}
+              />
+            </CardContent>
+          </Card>
+        ) : activeTab === "overview" && (
+          <>
         {/* Summary Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
           <Card className="bg-gradient-to-br from-rose-50 to-pink-50 border-rose-200">
@@ -245,6 +291,8 @@ export default function ClientDetailView({ clientEmail, clientName, onBack }) {
             })}
           </CardContent>
         </Card>
+          </>
+        )}
       </div>
     </div>
   );
