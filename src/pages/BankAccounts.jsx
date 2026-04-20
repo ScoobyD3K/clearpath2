@@ -109,13 +109,12 @@ export default function BankAccounts() {
   return (
     <div className="p-3 md:p-6 min-h-screen" style={{ background: 'linear-gradient(135deg, #CDE7CF, #B9DFF5, #A2B7C8)' }}>
       <div className="max-w-2xl mx-auto">
-        <Link to={createPageUrl("Dashboard")} className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-4 text-sm font-medium transition-colors">
-          <ArrowLeft className="w-4 h-4" /> Back to Dashboard
-        </Link>
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow">
-            <Landmark className="w-5 h-5 text-white" />
-          </div>
+        <div className="flex items-center gap-4 mb-6">
+          <Link to={createPageUrl("Dashboard")}>
+            <Button variant="outline" size="icon" title="Back to Dashboard">
+              <ArrowLeft className="w-4 h-4" />
+            </Button>
+          </Link>
           <div>
             <h1 className="text-2xl font-bold text-slate-900">Bank Accounts & Savings</h1>
             <p className="text-sm text-slate-600">Manage your accounts and track balances</p>
