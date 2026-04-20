@@ -248,7 +248,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
           <Link to={createPageUrl("Debts")} className="block">
             <StatCard
               title="Total Debt"
@@ -304,9 +304,6 @@ export default function Dashboard() {
               />
             </Link>
           )}
-        </div>
-
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           <SubscriptionCard />
         </div>
 
