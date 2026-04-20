@@ -255,7 +255,7 @@ export default function Dashboard() {
               value={`$${totalDebt.toLocaleString()}`}
               icon={CreditCard}
               bgGradient="bg-gradient-to-br from-rose-500 to-pink-600"
-              cardStyle={{ backgroundColor: "rgba(244, 63, 94, 0.12)", border: "2px solid rgba(244, 63, 94, 0.3)" }}
+              cardStyle={{ background: "linear-gradient(135deg, rgba(244, 63, 94, 0.75), rgba(236, 72, 153, 0.75))", border: "none" }}
             />
           </Link>
           <div onClick={() => setShowBankAccounts(true)} className="cursor-pointer">
@@ -276,8 +276,8 @@ export default function Dashboard() {
               ? "bg-gradient-to-br from-purple-500 to-indigo-600" 
               : "bg-gradient-to-br from-slate-500 to-slate-700"}
             cardStyle={netPosition >= 0
-              ? { backgroundColor: "rgba(139, 92, 246, 0.12)", border: "2px solid rgba(139, 92, 246, 0.3)" }
-              : { backgroundColor: "rgba(100, 116, 139, 0.12)", border: "2px solid rgba(100, 116, 139, 0.3)" }}
+              ? { background: "linear-gradient(135deg, rgba(139, 92, 246, 0.75), rgba(99, 102, 241, 0.75))", border: "none" }
+              : { background: "linear-gradient(135deg, rgba(100, 116, 139, 0.75), rgba(71, 85, 105, 0.75))", border: "none" }}
           />
           <Link to={createPageUrl("MinimumPayments")} className="block">
             <StatCard
@@ -285,7 +285,7 @@ export default function Dashboard() {
               value={`$${totalMinPayments.toLocaleString()}`}
               icon={Target}
               bgGradient="bg-gradient-to-br from-amber-500 to-orange-600"
-              cardStyle={{ backgroundColor: "rgba(245, 158, 11, 0.12)", border: "2px solid rgba(245, 158, 11, 0.3)" }}
+              cardStyle={{ background: "linear-gradient(135deg, rgba(245, 158, 11, 0.75), rgba(234, 88, 12, 0.75))", border: "none" }}
             />
           </Link>
           {creditUtilization !== null && (
@@ -301,10 +301,10 @@ export default function Dashboard() {
                 }
                 cardStyle={
                   creditUtilization > 70
-                    ? { backgroundColor: "rgba(239, 68, 68, 0.12)", border: "2px solid rgba(239, 68, 68, 0.3)" }
+                    ? { background: "linear-gradient(135deg, rgba(239, 68, 68, 0.75), rgba(244, 63, 94, 0.75))", border: "none" }
                     : creditUtilization > 30
-                    ? { backgroundColor: "rgba(245, 158, 11, 0.12)", border: "2px solid rgba(245, 158, 11, 0.3)" }
-                    : { backgroundColor: "rgba(20, 184, 166, 0.12)", border: "2px solid rgba(20, 184, 166, 0.3)" }
+                    ? { background: "linear-gradient(135deg, rgba(245, 158, 11, 0.75), rgba(234, 88, 12, 0.75))", border: "none" }
+                    : { background: "linear-gradient(135deg, rgba(20, 184, 166, 0.75), rgba(6, 182, 212, 0.75))", border: "none" }
                 }
               />
             </Link>

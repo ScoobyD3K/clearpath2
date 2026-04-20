@@ -24,8 +24,8 @@ export default function SubscriptionCard() {
       <Card
         className="shadow-md hover:shadow-lg transition-shadow overflow-hidden backdrop-blur-md"
         style={{
-          backgroundColor: "rgba(139, 92, 246, 0.15)",
-          border: "2px solid rgba(139, 92, 246, 0.3)",
+          background: "linear-gradient(135deg, rgba(139, 92, 246, 0.75), rgba(109, 40, 217, 0.75))",
+          border: "none",
         }}
       >
         <CardContent className="p-3">
