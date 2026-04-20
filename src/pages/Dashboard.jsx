@@ -258,7 +258,7 @@ export default function Dashboard() {
               cardStyle={{ background: "linear-gradient(135deg, rgba(244, 63, 94, 0.75), rgba(236, 72, 153, 0.75))", border: "none" }}
             />
           </Link>
-          <div onClick={() => setShowBankAccounts(true)} className="cursor-pointer">
+          <Link to={createPageUrl("BankAccounts")} className="block">
             <EditableStatCard
               title="Savings"
               value={`$${totalSavings.toLocaleString()}`}
@@ -267,7 +267,7 @@ export default function Dashboard() {
               iconColor="text-green-600"
               green={true}
             />
-          </div>
+          </Link>
           <StatCard
             title="Net Position"
             value={`${netPosition >= 0 ? '+' : ''}$${netPosition.toLocaleString()}`}

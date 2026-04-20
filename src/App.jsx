@@ -11,6 +11,7 @@ import MinimumPayments from './pages/MinimumPayments';
 import CreditUtilization from './pages/CreditUtilization';
 import Subscriptions from './pages/Subscriptions';
 import AdvisorDashboard from './pages/AdvisorDashboard';
+import BankAccounts from './pages/BankAccounts';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -57,6 +58,7 @@ const AuthenticatedApp = () => {
         <Route path="/CreditUtilization" element={<LayoutWrapper currentPageName="CreditUtilization"><CreditUtilization /></LayoutWrapper>} />
         <Route path="/Subscriptions" element={<LayoutWrapper currentPageName="Subscriptions"><Subscriptions /></LayoutWrapper>} />
         <Route path="/AdvisorDashboard" element={<LayoutWrapper currentPageName="AdvisorDashboard"><AdvisorDashboard /></LayoutWrapper>} />
+        <Route path="/BankAccounts" element={<LayoutWrapper currentPageName="BankAccounts"><BankAccounts /></LayoutWrapper>} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </LayoutWrapper>
