@@ -255,7 +255,7 @@ export default function Dashboard() {
               value={`$${totalDebt.toLocaleString()}`}
               icon={CreditCard}
               bgGradient="bg-gradient-to-br from-rose-500 to-pink-600"
-              iconColor="text-rose-600"
+              cardStyle={{ backgroundColor: "rgba(244, 63, 94, 0.12)", border: "2px solid rgba(244, 63, 94, 0.3)" }}
             />
           </Link>
           <div onClick={() => setShowBankAccounts(true)} className="cursor-pointer">
@@ -275,7 +275,9 @@ export default function Dashboard() {
             bgGradient={netPosition >= 0 
               ? "bg-gradient-to-br from-purple-500 to-indigo-600" 
               : "bg-gradient-to-br from-slate-500 to-slate-700"}
-            iconColor={netPosition >= 0 ? "text-purple-600" : "text-slate-600"}
+            cardStyle={netPosition >= 0
+              ? { backgroundColor: "rgba(139, 92, 246, 0.12)", border: "2px solid rgba(139, 92, 246, 0.3)" }
+              : { backgroundColor: "rgba(100, 116, 139, 0.12)", border: "2px solid rgba(100, 116, 139, 0.3)" }}
           />
           <Link to={createPageUrl("MinimumPayments")} className="block">
             <StatCard
@@ -283,7 +285,7 @@ export default function Dashboard() {
               value={`$${totalMinPayments.toLocaleString()}`}
               icon={Target}
               bgGradient="bg-gradient-to-br from-amber-500 to-orange-600"
-              iconColor="text-amber-600"
+              cardStyle={{ backgroundColor: "rgba(245, 158, 11, 0.12)", border: "2px solid rgba(245, 158, 11, 0.3)" }}
             />
           </Link>
           {creditUtilization !== null && (
@@ -297,9 +299,12 @@ export default function Dashboard() {
                   creditUtilization > 30 ? "bg-gradient-to-br from-amber-500 to-orange-500" :
                   "bg-gradient-to-br from-teal-500 to-cyan-600"
                 }
-                iconColor={
-                  creditUtilization > 70 ? "text-red-600" :
-                  creditUtilization > 30 ? "text-amber-600" : "text-teal-600"
+                cardStyle={
+                  creditUtilization > 70
+                    ? { backgroundColor: "rgba(239, 68, 68, 0.12)", border: "2px solid rgba(239, 68, 68, 0.3)" }
+                    : creditUtilization > 30
+                    ? { backgroundColor: "rgba(245, 158, 11, 0.12)", border: "2px solid rgba(245, 158, 11, 0.3)" }
+                    : { backgroundColor: "rgba(20, 184, 166, 0.12)", border: "2px solid rgba(20, 184, 166, 0.3)" }
                 }
               />
             </Link>
