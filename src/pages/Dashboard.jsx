@@ -309,7 +309,9 @@ export default function Dashboard() {
               />
             </Link>
           )}
-          <SubscriptionCard />
+          <div className="md:hover:scale-[1.03] md:hover:shadow-xl transition-transform duration-200">
+            <SubscriptionCard />
+          </div>
         </div>
 
       </div>
