@@ -249,7 +249,7 @@ export default function Dashboard() {
         )}
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-          <Link to={createPageUrl("Debts")} className="block">
+          <Link to={createPageUrl("Debts")} className="block md:hover:scale-[1.03] md:hover:shadow-xl transition-transform duration-200">
             <StatCard
               title="Total Debt"
               value={`$${totalDebt.toLocaleString()}`}
@@ -258,7 +258,7 @@ export default function Dashboard() {
               cardStyle={{ background: "linear-gradient(135deg, rgba(244, 63, 94, 0.75), rgba(236, 72, 153, 0.75))", border: "none" }}
             />
           </Link>
-          <Link to={createPageUrl("BankAccounts")} className="block">
+          <Link to={createPageUrl("BankAccounts")} className="block md:hover:scale-[1.03] md:hover:shadow-xl transition-transform duration-200">
             <EditableStatCard
               title="Savings"
               value={`$${totalSavings.toLocaleString()}`}
@@ -279,7 +279,7 @@ export default function Dashboard() {
               ? { background: "linear-gradient(135deg, rgba(139, 92, 246, 0.75), rgba(99, 102, 241, 0.75))", border: "none" }
               : { background: "linear-gradient(135deg, rgba(100, 116, 139, 0.75), rgba(71, 85, 105, 0.75))", border: "none" }}
           />
-          <Link to={createPageUrl("MinimumPayments")} className="block">
+          <Link to={createPageUrl("MinimumPayments")} className="block md:hover:scale-[1.03] md:hover:shadow-xl transition-transform duration-200">
             <StatCard
               title="Min Payments"
               value={`$${totalMinPayments.toLocaleString()}`}
@@ -289,7 +289,7 @@ export default function Dashboard() {
             />
           </Link>
           {creditUtilization !== null && (
-            <Link to={createPageUrl("CreditUtilization")} className="block">
+            <Link to={createPageUrl("CreditUtilization")} className="block md:hover:scale-[1.03] md:hover:shadow-xl transition-transform duration-200">
               <StatCard
                 title="Credit Utilization"
                 value={`${creditUtilization.toFixed(1)}%`}
