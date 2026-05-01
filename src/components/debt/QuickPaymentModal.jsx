@@ -17,10 +17,13 @@ export default function QuickPaymentModal({ open, onOpenChange, debt, onSubmit, 
     }
   }, [open, debt, type]);
 
+  const effectiveAmount = amount || (type === "pay" ? debt?.minimum_payment?.toString() : '');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!effectiveAmount) return;
     setIsSubmitting(true);
-    await onSubmit(parseFloat(amount));
+    await onSubmit(parseFloat(effectiveAmount));
     setIsSubmitting(false);
     setAmount('');
     onOpenChange(false);
@@ -81,7 +84,6 @@ export default function QuickPaymentModal({ open, onOpenChange, debt, onSubmit, 
                 className="pl-8 text-lg"
                 placeholder="0.00"
                 autoFocus
-                required
               />
             </div>
           </div>
@@ -126,7 +128,7 @@ export default function QuickPaymentModal({ open, onOpenChange, debt, onSubmit, 
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting || !amount}
+              disabled={isSubmitting || !effectiveAmount}
               className={type === "pay" 
                 ? "flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
                 : "flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
