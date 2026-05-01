@@ -26,11 +26,6 @@ export default function DebtDetail() {
     notes: "",
   });
 
-  useEffect(() => {
-    if (debt?.minimum_payment && paymentData.amount === "") {
-      setPaymentData(prev => ({ ...prev, amount: debt.minimum_payment.toString() }));
-    }
-  }, [debt?.minimum_payment]);
   const [showCelebration, setShowCelebration] = useState(false);
   const [paidOffDebtInfo, setPaidOffDebtInfo] = useState(null);
 
@@ -51,6 +46,12 @@ export default function DebtDetail() {
     initialData: [],
     enabled: !!debtId,
   });
+
+  useEffect(() => {
+    if (debt?.minimum_payment && paymentData.amount === "") {
+      setPaymentData(prev => ({ ...prev, amount: debt.minimum_payment.toString() }));
+    }
+  }, [debt?.minimum_payment]);
 
   useEffect(() => {
     if (debt && !editData) {
