@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,14 @@ import { Plus, Minus } from "lucide-react";
 export default function QuickPaymentModal({ open, onOpenChange, debt, onSubmit, type = "pay" }) {
   const [amount, setAmount] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (open && type === "pay" && debt?.minimum_payment) {
+      setAmount(debt.minimum_payment.toString());
+    } else if (open) {
+      setAmount('');
+    }
+  }, [open, debt, type]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
