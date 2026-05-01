@@ -25,6 +25,12 @@ export default function DebtDetail() {
     payment_date: format(new Date(), "yyyy-MM-dd"),
     notes: "",
   });
+
+  useEffect(() => {
+    if (debt?.minimum_payment && paymentData.amount === "") {
+      setPaymentData(prev => ({ ...prev, amount: debt.minimum_payment.toString() }));
+    }
+  }, [debt?.minimum_payment]);
   const [showCelebration, setShowCelebration] = useState(false);
   const [paidOffDebtInfo, setPaidOffDebtInfo] = useState(null);
 
@@ -165,11 +171,14 @@ export default function DebtDetail() {
     },
   });
 
+  const effectivePaymentAmount = paymentData.amount || debt?.minimum_payment?.toString() || "";
+
   const handlePaymentSubmit = (e) => {
     e.preventDefault();
+    if (!effectivePaymentAmount) return;
     createPaymentMutation.mutate({
       debt_id: debtId,
-      amount: parseFloat(paymentData.amount),
+      amount: parseFloat(effectivePaymentAmount),
       payment_date: paymentData.payment_date,
       notes: paymentData.notes || null,
     });
@@ -518,7 +527,6 @@ export default function DebtDetail() {
                         onChange={(e) => setPaymentData(prev => ({ ...prev, amount: e.target.value }))}
                         className="pl-8"
                         placeholder={debt.minimum_payment?.toString() || "100"}
-                        required
                       />
                     </div>
                   </div>
@@ -548,7 +556,7 @@ export default function DebtDetail() {
                   <Button 
                     type="submit"
                     className="w-full bg-gradient-to-r from-blue-600 to-indigo-600"
-                    disabled={createPaymentMutation.isPending}
+                    disabled={createPaymentMutation.isPending || !effectivePaymentAmount}
                   >
                     {createPaymentMutation.isPending ? "Recording..." : "Record Payment"}
                   </Button>
