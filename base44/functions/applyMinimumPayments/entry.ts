@@ -11,23 +11,41 @@ Deno.serve(async (req) => {
     const todayDay = today.getDate(); // day of month (1-31)
     const todayStr = today.toISOString().split('T')[0]; // YYYY-MM-DD
 
+    // Get the first day of the current month for catch-up logic
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth(); // 0-indexed
+
     const results = [];
 
     for (const debt of allDebts) {
-      // Check if today matches the debt's due_date day of month
-      if (!debt.due_date || debt.due_date !== todayDay) continue;
+      if (!debt.due_date || debt.due_date <= 0) continue;
       if (!debt.minimum_payment || debt.minimum_payment <= 0) continue;
       if (!debt.current_balance || debt.current_balance <= 0) continue;
 
-      // Check if a payment was already made today for this debt (avoid double-deduction)
+      // Check if today is the due date OR if the due date already passed this month (catch-up)
+      const isDueToday = debt.due_date === todayDay;
+      const isPastDueThisMonth = debt.due_date < todayDay;
+
+      if (!isDueToday && !isPastDueThisMonth) continue;
+
+      // The date the payment was/should have been due this month
+      const dueDateThisMonth = new Date(currentYear, currentMonth, debt.due_date);
+      const dueDateStr = dueDateThisMonth.toISOString().split('T')[0];
+
+      // Check if an automatic payment was already made on or after the due date this month
       const existingPayments = await base44.asServiceRole.entities.Payment.filter({
         debt_id: debt.id,
-        payment_date: todayStr,
       });
 
-      const alreadyPaid = existingPayments.some(p => p.notes === 'Automatic minimum payment');
-      if (alreadyPaid) {
-        results.push({ debt: debt.name, status: 'skipped - already paid today' });
+      const alreadyPaidThisMonth = existingPayments.some(p => {
+        if (p.notes !== 'Automatic minimum payment') return false;
+        const payDate = new Date(p.payment_date);
+        // Payment was made on or after the due date within the current month
+        return payDate >= dueDateThisMonth && payDate.getMonth() === currentMonth && payDate.getFullYear() === currentYear;
+      });
+
+      if (alreadyPaidThisMonth) {
+        results.push({ debt: debt.name, status: 'skipped - already paid this month' });
         continue;
       }
 
@@ -35,11 +53,11 @@ Deno.serve(async (req) => {
       const newBalance = Math.max(0, debt.current_balance - paymentAmount);
       const isPaidOff = newBalance === 0;
 
-      // Record the payment
+      // Record the payment dated on the actual due date (or today if due today)
       await base44.asServiceRole.entities.Payment.create({
         debt_id: debt.id,
         amount: paymentAmount,
-        payment_date: todayStr,
+        payment_date: isDueToday ? todayStr : dueDateStr,
         notes: 'Automatic minimum payment',
       });
 
@@ -50,16 +68,17 @@ Deno.serve(async (req) => {
       });
 
       // Create a notification for the user
+      const label = isDueToday ? 'due today' : `due on the ${debt.due_date}th`;
       await base44.asServiceRole.entities.Notification.create({
-        title: '💳 Minimum Payment Applied',
-        message: `Your minimum payment of $${paymentAmount.toLocaleString()} has been automatically applied to ${debt.name}. Remaining balance: $${newBalance.toLocaleString()}.`,
+        title: isDueToday ? '💳 Minimum Payment Applied' : '⚠️ Missed Payment Caught',
+        message: `Your minimum payment of $${paymentAmount.toLocaleString()} has been automatically applied to ${debt.name} (${label}). Remaining balance: $${newBalance.toLocaleString()}.`,
         type: 'payment_reminder',
         debt_id: debt.id,
         user_email: debt.created_by,
         is_read: false,
       });
 
-      results.push({ debt: debt.name, amount: paymentAmount, newBalance, status: isPaidOff ? 'paid_off' : 'applied' });
+      results.push({ debt: debt.name, amount: paymentAmount, newBalance, dueDate: debt.due_date, status: isPaidOff ? 'paid_off' : (isDueToday ? 'applied' : 'caught-up') });
     }
 
     return Response.json({ success: true, processed: results.length, results });
