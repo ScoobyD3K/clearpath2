@@ -6,16 +6,12 @@ import { createPageUrl } from "@/utils";
 import { ArrowLeft, BarChart2, CheckCircle2, Home } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 
 export default function CreditUtilization() {
   const { data: debts = [], isLoading } = useQuery({
     queryKey: ['allDebts'],
     queryFn: () => base44.entities.Debt.list('name'),
   });
-
-  const activeCards = debts.filter(d => d.credit_limit > 0 && d.status === 'active');
-  const paidOffCards = debts.filter(d => d.credit_limit > 0 && d.status === 'paid_off');
 
   const allCards = debts.filter(d => d.credit_limit > 0);
   const totalLimit = allCards.reduce((s, d) => s + d.credit_limit, 0);
@@ -81,24 +77,29 @@ export default function CreditUtilization() {
               </Card>
             )}
 
-            {/* Active cards */}
-            {activeCards.length === 0 && paidOffCards.length === 0 && (
+            {/* All credit cards */}
+            {allCards.length === 0 && (
               <div className="text-center py-16 text-slate-500">
                 <BarChart2 className="w-12 h-12 mx-auto mb-3 text-slate-300" />
                 <p>No credit cards with limits found.</p>
               </div>
             )}
 
-            {activeCards.length > 0 && (
-              <div className="space-y-3 mb-6">
-                <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Active Cards</h2>
-                {activeCards.map(debt => {
-                  const pct = (debt.current_balance / debt.credit_limit) * 100;
+            {allCards.length > 0 && (
+              <div className="space-y-3">
+                <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">All Credit Cards</h2>
+                {allCards.map(debt => {
+                  const pct = debt.credit_limit > 0 ? (debt.current_balance / debt.credit_limit) * 100 : 0;
                   return (
                     <Card key={debt.id} className="border-slate-200 shadow-sm">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between mb-2">
-                          <p className="font-semibold text-slate-900">{debt.name}</p>
+                          <div className="flex items-center gap-2">
+                            <p className="font-semibold text-slate-900">{debt.name}</p>
+                            {debt.current_balance === 0 && (
+                              <CheckCircle2 className="w-4 h-4 text-green-500" />
+                            )}
+                          </div>
                           <span className={`font-bold ${utilizationColor(pct)}`}>{pct.toFixed(1)}%</span>
                         </div>
                         <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden mb-1">
@@ -108,34 +109,13 @@ export default function CreditUtilization() {
                           />
                         </div>
                         <div className="flex justify-between text-xs text-slate-500">
-                          <span>${debt.current_balance.toLocaleString()} balance</span>
+                          <span>${(debt.current_balance || 0).toLocaleString()} balance</span>
                           <span>${debt.credit_limit.toLocaleString()} limit</span>
                         </div>
                       </CardContent>
                     </Card>
                   );
                 })}
-              </div>
-            )}
-
-            {/* Paid off cards */}
-            {paidOffCards.length > 0 && (
-              <div className="space-y-3">
-                <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Paid Off</h2>
-                {paidOffCards.map(debt => (
-                  <Card key={debt.id} className="border-green-200 bg-green-50 shadow-sm">
-                    <CardContent className="flex items-center justify-between p-4">
-                      <div className="flex items-center gap-3">
-                        <CheckCircle2 className="w-5 h-5 text-green-600 shrink-0" />
-                        <div>
-                          <p className="font-semibold text-slate-900">{debt.name}</p>
-                          <p className="text-xs text-slate-500">Limit: ${debt.credit_limit.toLocaleString()}</p>
-                        </div>
-                      </div>
-                      <span className="text-sm font-bold text-green-600">0%</span>
-                    </CardContent>
-                  </Card>
-                ))}
               </div>
             )}
           </>
