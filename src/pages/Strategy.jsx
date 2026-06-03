@@ -44,22 +44,41 @@ export default function Strategy() {
   const runSimulation = (sortedDebts, withExtra) => {
     let totalInterest = 0;
     let totalMonths = 0;
-    let remainingDebts = sortedDebts.map(d => ({ ...d, remaining: d.current_balance }));
+    let remainingDebts = sortedDebts.map(d => ({
+      ...d,
+      remaining: d.current_balance,
+      minPayment: d.minimum_payment || 0,
+    }));
 
     while (remainingDebts.some(d => d.remaining > 0) && totalMonths < 600) {
       totalMonths++;
-      remainingDebts.forEach((debt, index) => {
-        if (debt.remaining > 0) {
-          const monthlyRate = debt.interest_rate / 100 / 12;
-          const interest = debt.remaining * monthlyRate;
-          totalInterest += interest;
-          let payment = debt.minimum_payment || 0;
-          if (index === 0 && withExtra) payment += extraPayment;
-          const principal = Math.min(payment - interest, debt.remaining);
-          debt.remaining = Math.max(0, debt.remaining - principal);
-        }
+
+      // Total budget this month = sum of all minimums + any extra
+      const totalMinimums = remainingDebts.reduce((sum, d) => sum + d.minPayment, 0);
+      let budget = totalMinimums + (withExtra ? extraPayment : 0);
+
+      // Pay interest and minimum on all debts first
+      remainingDebts.forEach(debt => {
+        if (debt.remaining <= 0) return;
+        const monthlyRate = debt.interest_rate / 100 / 12;
+        const interest = debt.remaining * monthlyRate;
+        totalInterest += interest;
+        debt.remaining += interest;
+        // Apply minimum payment (or full balance if less)
+        const minPay = Math.min(debt.minPayment, debt.remaining);
+        debt.remaining -= minPay;
+        budget -= minPay;
       });
-      remainingDebts = remainingDebts.filter(d => d.remaining > 0);
+
+      // Apply any remaining budget (extra + freed-up minimums) to the focus debt
+      if (budget > 0) {
+        const focus = remainingDebts.find(d => d.remaining > 0);
+        if (focus) {
+          focus.remaining = Math.max(0, focus.remaining - budget);
+        }
+      }
+
+      remainingDebts = remainingDebts.filter(d => d.remaining > 0.01);
     }
 
     return { totalInterest, totalMonths, years: Math.floor(totalMonths / 12), months: totalMonths % 12 };

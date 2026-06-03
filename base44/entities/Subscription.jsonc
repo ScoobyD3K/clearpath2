@@ -1,0 +1,60 @@
+{
+  "name": "Subscription",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the subscription (e.g., Netflix, Spotify)"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Cost per billing cycle"
+    },
+    "billing_cycle": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "yearly",
+        "weekly"
+      ],
+      "default": "monthly",
+      "description": "How often the subscription is billed"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "streaming",
+        "software",
+        "fitness",
+        "news",
+        "finance",
+        "other"
+      ],
+      "default": "other",
+      "description": "Category of the subscription"
+    },
+    "next_billing_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Next billing date"
+    }
+  },
+  "required": [
+    "name",
+    "amount"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

@@ -20,41 +20,49 @@ export default function PayoffPlan({ debts, strategy, extraPayment = 0 }) {
     let remainingDebts = sortedDebts.map(d => ({
       ...d,
       remaining: d.current_balance,
+      minPayment: d.minimum_payment || 0,
     }));
-
-    const totalMinPayments = remainingDebts.reduce((sum, d) => sum + (d.minimum_payment || 0), 0);
-    const availableExtra = extraPayment;
 
     while (remainingDebts.some(d => d.remaining > 0) && currentMonth < 600) {
       currentMonth++;
-      
-      remainingDebts.forEach((debt, index) => {
-        if (debt.remaining > 0) {
-          const monthlyRate = debt.interest_rate / 100 / 12;
-          const interest = debt.remaining * monthlyRate;
-          
-          let payment = debt.minimum_payment || 0;
-          
-          if (index === 0 && availableExtra > 0) {
-            payment += availableExtra;
-          }
-          
-          const principal = Math.min(payment - interest, debt.remaining);
-          debt.remaining = Math.max(0, debt.remaining - principal);
-          
-          if (debt.remaining === 0 && !plan.find(p => p.id === debt.id)) {
-            plan.push({
-              id: debt.id,
-              name: debt.name,
-              priority: plan.length + 1,
-              payoffMonth: currentMonth,
-              payoffDate: addMonths(new Date(), currentMonth),
-            });
-          }
+
+      // Total budget = all minimums + extra
+      const totalMinimums = remainingDebts.reduce((sum, d) => sum + d.minPayment, 0);
+      let budget = totalMinimums + extraPayment;
+
+      // Apply interest and minimum payments to all debts
+      remainingDebts.forEach(debt => {
+        if (debt.remaining <= 0) return;
+        const monthlyRate = debt.interest_rate / 100 / 12;
+        const interest = debt.remaining * monthlyRate;
+        debt.remaining += interest;
+        const minPay = Math.min(debt.minPayment, debt.remaining);
+        debt.remaining -= minPay;
+        budget -= minPay;
+      });
+
+      // Apply remaining budget (extra + freed-up minimums) to focus debt
+      if (budget > 0) {
+        const focus = remainingDebts.find(d => d.remaining > 0);
+        if (focus) {
+          focus.remaining = Math.max(0, focus.remaining - budget);
+        }
+      }
+
+      // Record any debts that just paid off
+      remainingDebts.forEach(debt => {
+        if (debt.remaining <= 0.01 && !plan.find(p => p.id === debt.id)) {
+          plan.push({
+            id: debt.id,
+            name: debt.name,
+            priority: plan.length + 1,
+            payoffMonth: currentMonth,
+            payoffDate: addMonths(new Date(), currentMonth),
+          });
         }
       });
-      
-      remainingDebts = remainingDebts.filter(d => d.remaining > 0);
+
+      remainingDebts = remainingDebts.filter(d => d.remaining > 0.01);
     }
 
     return plan;

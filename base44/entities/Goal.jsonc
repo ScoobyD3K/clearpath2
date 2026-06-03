@@ -1,0 +1,116 @@
+{
+  "name": "Goal",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the financial goal"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the goal"
+    },
+    "target_amount": {
+      "type": "number",
+      "description": "Target amount to achieve"
+    },
+    "current_amount": {
+      "type": "number",
+      "default": 0,
+      "description": "Current amount saved towards this goal"
+    },
+    "deadline": {
+      "type": "string",
+      "format": "date",
+      "description": "Target date to achieve the goal"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "short_term",
+        "long_term"
+      ],
+      "description": "Goal timeframe category"
+    },
+    "goal_type": {
+      "type": "string",
+      "enum": [
+        "emergency_fund",
+        "down_payment",
+        "vacation",
+        "retirement",
+        "education",
+        "vehicle",
+        "other"
+      ],
+      "description": "Type of financial goal"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "completed",
+        "paused"
+      ],
+      "default": "active",
+      "description": "Current status of the goal"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium",
+      "description": "Priority level of the goal"
+    }
+  },
+  "required": [
+    "name",
+    "target_amount",
+    "category",
+    "goal_type"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "name": "BankAccount",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Account nickname (e.g., Chase Checking, Emergency Fund)"
+    },
+    "institution": {
+      "type": "string",
+      "description": "Bank or institution name"
+    },
+    "account_type": {
+      "type": "string",
+      "enum": [
+        "checking",
+        "savings",
+        "money_market",
+        "cd",
+        "investment",
+        "other"
+      ],
+      "default": "savings",
+      "description": "Type of account"
+    },
+    "balance": {
+      "type": "number",
+      "description": "Current account balance",
+      "default": 0
+    }
+  },
+  "required": [
+    "name",
+    "balance"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

@@ -44,5 +44,11 @@
       "type": "array",
       "description": "Custom navigation configuration"
     }
-  }
+  },
+  "required": [
+    "profile_picture",
+    "monthly_income",
+    "payoff_strategy",
+    "custom_navigation"
+  ]
 }
