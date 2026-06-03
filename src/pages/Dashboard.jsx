@@ -52,6 +52,11 @@ export default function Dashboard() {
     initialData: [],
   });
 
+  const { data: allDebts = [] } = useQuery({
+    queryKey: ['allDebts'],
+    queryFn: () => base44.entities.Debt.list(),
+  });
+
   const updateStrategyMutation = useMutation({
     mutationFn: (strategy) => base44.auth.updateMe({ payoff_strategy: strategy }),
     onSuccess: async () => {
@@ -207,8 +212,9 @@ export default function Dashboard() {
   const totalMinPayments = debts.reduce((sum, debt) => sum + (debt.minimum_payment || 0), 0);
   const totalSavings = bankAccounts.reduce((sum, a) => sum + (a.balance || 0), 0);
   const netPosition = totalSavings - totalDebt;
-  const totalCreditLimit = debts.reduce((sum, debt) => sum + (debt.credit_limit || 0), 0);
-  const totalCreditBalance = debts.reduce((sum, debt) => sum + (debt.credit_limit ? debt.current_balance : 0), 0);
+  const creditCards = allDebts.filter(d => d.credit_limit > 0);
+  const totalCreditLimit = creditCards.reduce((sum, d) => sum + d.credit_limit, 0);
+  const totalCreditBalance = creditCards.reduce((sum, d) => sum + (d.current_balance || 0), 0);
   const creditUtilization = totalCreditLimit > 0 ? (totalCreditBalance / totalCreditLimit) * 100 : null;
 
   return (
@@ -291,7 +297,7 @@ export default function Dashboard() {
           {creditUtilization !== null && (
             <Link to={createPageUrl("CreditUtilization")} className="block md:hover:scale-[1.03] md:hover:shadow-xl transition-transform duration-200">
               <StatCard
-                title="Credit Utilization"
+                title="Total Credit & Debt"
                 value={`${creditUtilization.toFixed(1)}%`}
                 icon={BarChart2}
                 bgGradient={
