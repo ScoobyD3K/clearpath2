@@ -214,8 +214,8 @@ export default function Dashboard() {
   const netPosition = totalSavings - totalDebt;
   const creditCards = allDebts.filter(d => d.credit_limit > 0);
   const totalCreditLimit = creditCards.reduce((sum, d) => sum + d.credit_limit, 0);
-  const totalCreditBalance = creditCards.reduce((sum, d) => sum + (d.current_balance || 0), 0);
-  const creditUtilization = totalCreditLimit > 0 ? (totalCreditBalance / totalCreditLimit) * 100 : null;
+  const totalAllDebt = allDebts.reduce((sum, d) => sum + (d.current_balance || 0), 0);
+  const creditUtilization = totalCreditLimit > 0 ? (totalAllDebt / totalCreditLimit) * 100 : null;
 
   return (
     <div className="p-3 md:p-6 min-h-screen" style={{ background: 'linear-gradient(135deg, #CDE7CF, #B9DFF5, #A2B7C8)' }}>
