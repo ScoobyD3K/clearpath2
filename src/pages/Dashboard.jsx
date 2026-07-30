@@ -14,7 +14,6 @@ import QuickPaymentModal from "../components/debt/QuickPaymentModal";
 import SavingsAdjustmentModal from "../components/dashboard/SavingsAdjustmentModal";
 import BankAccountsModal from "../components/dashboard/BankAccountsModal";
 import SubscriptionCard from "../components/dashboard/SubscriptionCard";
-import CreditDebtCard from "../components/dashboard/CreditDebtCard";
 import { format } from "date-fns";
 import { toast } from "sonner";
 
@@ -217,6 +216,13 @@ export default function Dashboard() {
   const totalCreditLimit = creditCards.reduce((sum, d) => sum + d.credit_limit, 0);
   const totalCreditCardDebt = creditCards.reduce((sum, d) => sum + (d.current_balance || 0), 0);
   const creditUtilization = totalCreditLimit > 0 ? (totalCreditCardDebt / totalCreditLimit) * 100 : null;
+  const utilizationGradient = creditUtilization === null
+    ? "linear-gradient(135deg, rgba(100, 116, 139, 0.75), rgba(71, 85, 105, 0.75))"
+    : creditUtilization > 70
+      ? "linear-gradient(135deg, rgba(239, 68, 68, 0.75), rgba(244, 63, 94, 0.75))"
+      : creditUtilization > 30
+        ? "linear-gradient(135deg, rgba(245, 158, 11, 0.75), rgba(234, 88, 12, 0.75))"
+        : "linear-gradient(135deg, rgba(20, 184, 166, 0.75), rgba(6, 182, 212, 0.75))";
 
   return (
     <div className="p-3 md:p-6 min-h-screen" style={{ background: 'linear-gradient(135deg, #CDE7CF, #B9DFF5, #A2B7C8)' }}>
@@ -297,9 +303,12 @@ export default function Dashboard() {
           </Link>
           {totalCreditLimit > 0 && (
             <Link to={createPageUrl("CreditUtilization")} className="block md:hover:scale-[1.03] md:hover:shadow-xl transition-transform duration-200">
-              <CreditDebtCard
-                totalAvailableCredit={totalCreditLimit}
-                totalOutstandingDebt={totalCreditCardDebt}
+              <StatCard
+                title="Credit Utilization"
+                value={`${creditUtilization.toFixed(1)}%`}
+                icon={BarChart2}
+                bgGradient="bg-gradient-to-br from-teal-500 to-cyan-600"
+                cardStyle={{ background: utilizationGradient, border: "none" }}
               />
             </Link>
           )}
