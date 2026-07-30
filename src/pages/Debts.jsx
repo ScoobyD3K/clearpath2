@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, ArrowLeft, Home, Clock, History } from "lucide-react";
 import { differenceInDays, parseISO } from "date-fns";
 import { Link } from "react-router-dom";
@@ -19,6 +20,7 @@ export default function Debts() {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
+    debt_type: "other",
     total_amount: "",
     current_balance: "",
     interest_rate: "",
@@ -128,6 +130,7 @@ export default function Debts() {
   const resetForm = () => {
     setFormData({
       name: "",
+      debt_type: "other",
       total_amount: "",
       current_balance: "",
       interest_rate: "",
@@ -154,6 +157,7 @@ export default function Debts() {
     
     createDebtMutation.mutate({
       name: formData.name,
+      debt_type: formData.debt_type,
       total_amount: parseFloat(formData.total_amount),
       current_balance: parseFloat(formData.current_balance),
       interest_rate: parseFloat(formData.interest_rate),
@@ -217,6 +221,25 @@ export default function Debts() {
                       placeholder="e.g., Credit Card, Student Loan"
                       required
                     />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="debt_type">Debt Type</Label>
+                    <Select
+                      value={formData.debt_type}
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, debt_type: value }))}
+                    >
+                      <SelectTrigger id="debt_type">
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="credit_card">Credit Card</SelectItem>
+                        <SelectItem value="vehicle_loan">Vehicle Loan</SelectItem>
+                        <SelectItem value="home_loan">Home Loan</SelectItem>
+                        <SelectItem value="pawn_loan">Pawn Loan</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   
                   <div>

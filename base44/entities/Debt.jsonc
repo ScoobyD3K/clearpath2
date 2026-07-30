@@ -6,6 +6,18 @@
       "type": "string",
       "description": "Name of the debt (e.g., Credit Card, Student Loan)"
     },
+    "debt_type": {
+      "type": "string",
+      "enum": [
+        "credit_card",
+        "vehicle_loan",
+        "home_loan",
+        "pawn_loan",
+        "other"
+      ],
+      "default": "other",
+      "description": "Category of the debt"
+    },
     "total_amount": {
       "type": "number",
       "description": "Total debt amount"
