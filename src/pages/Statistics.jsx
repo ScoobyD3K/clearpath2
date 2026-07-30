@@ -34,7 +34,7 @@ export default function Statistics() {
   const calculateStatistics = () => {
     const totalOriginalDebt = debts.reduce((sum, debt) => sum + debt.total_amount, 0);
     const totalCurrentDebt = debts.filter(d => d.status === 'active').reduce((sum, debt) => sum + debt.current_balance, 0);
-    const totalPaid = totalOriginalDebt - totalCurrentDebt;
+    const totalPaid = allPayments.reduce((sum, payment) => sum + payment.amount, 0);
     const progressPercentage = totalOriginalDebt > 0 ? (totalPaid / totalOriginalDebt) * 100 : 0;
 
     // Calculate principal vs interest
