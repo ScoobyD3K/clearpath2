@@ -12,6 +12,7 @@
         "credit_card",
         "vehicle_loan",
         "home_loan",
+        "student_loan",
         "pawn_loan",
         "other"
       ],

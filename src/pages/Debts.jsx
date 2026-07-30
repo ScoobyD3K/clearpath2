@@ -236,6 +236,7 @@ export default function Debts() {
                         <SelectItem value="credit_card">Credit Card</SelectItem>
                         <SelectItem value="vehicle_loan">Vehicle Loan</SelectItem>
                         <SelectItem value="home_loan">Home Loan</SelectItem>
+                        <SelectItem value="student_loan">Student Loan</SelectItem>
                         <SelectItem value="pawn_loan">Pawn Loan</SelectItem>
                         <SelectItem value="other">Other</SelectItem>
                       </SelectContent>
