@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Plus, Trash2, DollarSign, Calendar, Edit, X, Save, Home } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -57,6 +58,7 @@ export default function DebtDetail() {
     if (debt && !editData) {
       setEditData({
         name: debt.name,
+        debt_type: debt.debt_type || "other",
         total_amount: debt.total_amount,
         current_balance: debt.current_balance,
         interest_rate: debt.interest_rate,
@@ -189,6 +191,7 @@ export default function DebtDetail() {
     e.preventDefault();
     updateDebtMutation.mutate({
       name: editData.name,
+      debt_type: editData.debt_type,
       total_amount: parseFloat(editData.total_amount),
       current_balance: parseFloat(editData.current_balance),
       interest_rate: parseFloat(editData.interest_rate),
@@ -288,6 +291,7 @@ export default function DebtDetail() {
                     setIsEditing(false);
                     setEditData({
                       name: debt.name,
+                      debt_type: debt.debt_type || "other",
                       total_amount: debt.total_amount,
                       current_balance: debt.current_balance,
                       interest_rate: debt.interest_rate,
@@ -312,6 +316,26 @@ export default function DebtDetail() {
                       onChange={(e) => setEditData(prev => ({ ...prev, name: e.target.value }))}
                       required
                     />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="edit_debt_type">Debt Type</Label>
+                    <Select
+                      value={editData?.debt_type || "other"}
+                      onValueChange={(value) => setEditData(prev => ({ ...prev, debt_type: value }))}
+                    >
+                      <SelectTrigger id="edit_debt_type">
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="credit_card">Credit Card</SelectItem>
+                        <SelectItem value="vehicle_loan">Vehicle Loan</SelectItem>
+                        <SelectItem value="home_loan">Home Loan</SelectItem>
+                        <SelectItem value="student_loan">Student Loan</SelectItem>
+                        <SelectItem value="pawn_loan">Pawn Loan</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   
                   <div>
@@ -423,6 +447,7 @@ export default function DebtDetail() {
                       setIsEditing(false);
                       setEditData({
                         name: debt.name,
+                        debt_type: debt.debt_type || "other",
                         total_amount: debt.total_amount,
                         current_balance: debt.current_balance,
                         interest_rate: debt.interest_rate,
