@@ -14,6 +14,7 @@ import QuickPaymentModal from "../components/debt/QuickPaymentModal";
 import SavingsAdjustmentModal from "../components/dashboard/SavingsAdjustmentModal";
 import BankAccountsModal from "../components/dashboard/BankAccountsModal";
 import SubscriptionCard from "../components/dashboard/SubscriptionCard";
+import CreditDebtCard from "../components/dashboard/CreditDebtCard";
 import { format } from "date-fns";
 import { toast } from "sonner";
 
@@ -294,24 +295,11 @@ export default function Dashboard() {
               cardStyle={{ background: "linear-gradient(135deg, rgba(245, 158, 11, 0.75), rgba(234, 88, 12, 0.75))", border: "none" }}
             />
           </Link>
-          {creditUtilization !== null && (
+          {totalCreditLimit > 0 && (
             <Link to={createPageUrl("CreditUtilization")} className="block md:hover:scale-[1.03] md:hover:shadow-xl transition-transform duration-200">
-              <StatCard
-                title="Total Credit & Debt"
-                value={`${creditUtilization.toFixed(1)}%`}
-                icon={BarChart2}
-                bgGradient={
-                  creditUtilization > 70 ? "bg-gradient-to-br from-red-500 to-rose-600" :
-                  creditUtilization > 30 ? "bg-gradient-to-br from-amber-500 to-orange-500" :
-                  "bg-gradient-to-br from-teal-500 to-cyan-600"
-                }
-                cardStyle={
-                  creditUtilization > 70
-                    ? { background: "linear-gradient(135deg, rgba(239, 68, 68, 0.75), rgba(244, 63, 94, 0.75))", border: "none" }
-                    : creditUtilization > 30
-                    ? { background: "linear-gradient(135deg, rgba(245, 158, 11, 0.75), rgba(234, 88, 12, 0.75))", border: "none" }
-                    : { background: "linear-gradient(135deg, rgba(20, 184, 166, 0.75), rgba(6, 182, 212, 0.75))", border: "none" }
-                }
+              <CreditDebtCard
+                totalAvailableCredit={totalCreditLimit}
+                totalOutstandingDebt={totalAllDebt}
               />
             </Link>
           )}
