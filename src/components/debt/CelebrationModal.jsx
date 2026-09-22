@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { PartyPopper, TrendingUp, DollarSign, Sparkles } from "lucide-react";
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import confetti from 'canvas-confetti';
 
 const MILESTONES = [15, 30, 45, 60, 75, 90, 100];
 
@@ -31,6 +32,38 @@ export function checkMilestone(oldBalance, newBalance, totalAmount) {
 export default function CelebrationModal({ open, onOpenChange, debtName, totalAmount, milestone }) {
   const cfg = milestoneConfig[milestone] || milestoneConfig[100];
   const isPaidOff = milestone === 100;
+
+  useEffect(() => {
+    if (open) {
+      const burst = (particleRatio, opts) =>
+        confetti({
+          origin: { y: 0.7 },
+          colors: ['#fbbf24', '#34d399', '#60a5fa', '#f472b6', '#a78bfa'],
+          particleCount: Math.floor(200 * particleRatio),
+          zIndex: 100,
+          ...opts,
+        });
+
+      burst(0.25, { spread: 26, startVelocity: 55 });
+      burst(0.2, { spread: 60 });
+      burst(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+      burst(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+      burst(0.1, { spread: 120, startVelocity: 45 });
+
+      if (isPaidOff) {
+        setTimeout(() => {
+          confetti({
+            particleCount: 100,
+            startVelocity: 45,
+            spread: 360,
+            origin: { x: 0.5, y: 0.6 },
+            colors: ['#fbbf24', '#34d399', '#60a5fa', '#f472b6'],
+            zIndex: 100,
+          });
+        }, 400);
+      }
+    }
+  }, [open, isPaidOff]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
